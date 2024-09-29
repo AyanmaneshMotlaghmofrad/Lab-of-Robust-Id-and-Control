@@ -1,0 +1,143 @@
+\chapter{System Identification}    % For a new chapter (works in book and report class)
+\subsubsection{What system identificaiton is about?}
+% page7
+% -------------------------------------
+\textit{System identification} deals with the problem of building mathematical model of dynamical systems from sets of experimentally collected input, output data.
+
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/system-id-scheme.png}
+    % Adjust width as needed
+    \caption{A general control plant with additive disturbances \textit{l} and \textit{d}}
+    \label{fig:id_classes}
+\end{figure}
+
+There are three different approaches to mathematically model dynamical systems:
+\begin{enumerate}
+
+\item \textbf{White-box modelling}:\newline Models, in this approach, are obtained by applying f\textbf{irst principles for physics}. All the physical phenomena and also all the physical parameters involved in the equiation are assumed to be exactly know. This approach was applied in the course of \textit{Automatic Control} for modelling systems.
+
+\item \textbf{Grey-box modelling}: Here, \textbf{models} are base on the equations obtained by applying first principles of \textbf{physics}, but \textbf{the parameters} entering the equations are not completely known, so they needed \textbf{to be estimated} from experimental data. 
+
+\item \textbf{Black-box modelling}: In this case, the structure of the equations is selected by the user on the basis of some "general" a-priori information, e.g. linearity, on the system physics, or at any rate by the system properties. \newline \begin{factbox}[Professor's Quote]
+    In this method, the designer of the system model, has some degree of freedom in selecteing the structure of the model, provided that the model embeds the "general" a-priori information.\newline \newline
+    If we do not have any a-priori information, we can pick artificial-neural-network as the structure of the model.
+\end{factbox}
+the parameters involved in the equations of the black-box models are \textbf{to be estimated}, or computed, by using experimentally collected data. In general, \textbf{the parameters of a black-box model do not have a clear physical meaning}.
+\end{enumerate}
+
+
+In general, \textbf{white-box models are not very useful in practice}, at least for control applications, because they are based on the assumption that the physics involved in the system under study is well-known.
+
+\subsubsection{The comparison between the grey-box and Black-box models:}
+\textbf{Similarity} 
+In both cases:
+\begin{itemize}
+\item  exploiting physical insight to drive/select the structure of the equations.
+\item Experimentally collected data is used to estimate/compute the parameters involved in the equations.
+\end{itemize}
+
+\textbf{Difference} 
+\begin{itemize}
+\item In grey-box modelling, the structure of the equations is not selected by the user, since it is forced by the first principles of physics. This suggests that, in general, the equations of a grey-box model depends, in a possibly complex, non-linear ways, on the physical parameters to-be-estimated.\newline
+for instance of a grey-box model:
+$\begin{cases}
+    \dot{x}(t) = A x(t) + B u(t) \\
+    y(t) = C x(t) + D u(t)
+\end{cases}$ where:
+\newline
+\[
+A = \begin{bmatrix}
+\frac{m}{k^2} & \sqrt{\beta} \\
+\frac{\alpha^2.k^3}{\gamma} & 1  
+\end{bmatrix}, \quad
+B = \begin{bmatrix}
+b_1 \\
+b_2
+\end{bmatrix}, \quad
+C = \begin{bmatrix}
+c_1 & c_2
+\end{bmatrix}, \quad
+D = \begin{bmatrix}
+d
+\end{bmatrix}
+\]
+In this case, using the physical principles for modelling seems like a good idea; the system is simple, and its physics is well-known. The problem is that the parameters are to-be-estimated. This problem leads to an optimization problem. Now, A difficulty may arise, because if the equation we are going to write so that they relates input and output data obtained experimentally depends on parameters in a complex and non-linear fashion, the mathematical problem of driving what are the correct value of the system parameter satisfying the relation between the intput and output is going to be a complex problem. \textbf{This is the main limitation of grey-box model.}
+
+\item In the black-box version of the same problem, just some general information such as Liniear time invariant is assumed. Now, we found the four matricies \textit{A, B, C, D} in a form that is much simpller, just 4 parameters for A, and so on, for instance. In this case, the system output depends on the input in a way simpler manner.
+\[
+A = \begin{bmatrix}
+a_{11} & a_{12} \\
+a_{21} & a_{22}  
+\end{bmatrix}, \quad
+B = \begin{bmatrix} 
+b_1 \\
+b_2
+\end{bmatrix}, \quad
+C = \begin{bmatrix}
+c_1 & c_2
+\end{bmatrix}, \quad
+D = \begin{bmatrix}
+d
+\end{bmatrix}
+\]\newline
+
+
+\begin{factbox}[Professor's Quote]
+    Therefore, in black-box model, we have more freedom to select the struture of the equations in a way that is computationally more convenient, by embedding/exploiting some general properties drived from our physical insight. 
+The idea is to consider only the most important a-priori information and/or the information that we trust the most!
+\end{factbox}
+
+\end{itemize}
+
+\subsubsection{General procedure for building a grey/black-box modelling:}
+Let's compare grey-box and black-box models from the point of view of the parameter estimation problem. While building the mathematical model of the system, in general, we follow a procedure similar to the following one, it be a grey-box or black-box structure:\newline
+
+\begin{enumerate}
+    \item to exploint availabe a-priori information on the system under study to select \textbf{the structure of the mathematical equation} describing the input-output mapping.
+    \begin{factbox}[Professor's Quote]
+The model is always in the input/output form. Signals that we can apply to the system is called input, and signals that we can measure, is called output. If we are in the case where we can measure all \textbf{state variables} involved in the system, we can have a full description of the system. However, in a general case, the system involves input, output, and state variables, but we are able to measure only a subset of physical variables in the system - being the value to be monitored or the control output.
+
+Now, these parameters have physical meaning in grey-box case, or are merely mathematical parameters in black-bock case.
+\end{factbox}
+
+In the end of this step, we have a mathematical model of the following form:
+\begin{equation}
+y(t) = f\left( u(t), \theta\right)
+\end{equation}
+
+    \item To collect input-output data representing the behavior of the system under study by performing an experiment.
+\begin{center}\begin{tikzpicture}[auto, node distance=2.5cm, >=latex]
+    % Define styles
+    \tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+                          text width=5em, text centered, rounded corners, minimum height=3em]
+    \tikzstyle{input} = [coordinate]
+    \tikzstyle{output} = [coordinate]
+    \tikzstyle{arrow} = [thick,->,>=latex]
+    
+    % Nodes
+    \node [input] (input) {};
+    \node [block, right of=input] (plant) {Plant};
+    \node [output, right of=plant] (output) {};
+    
+    % Draw arrows
+    \draw [arrow] (input) -- node [above] {$\tilde{u}(t)$} (plant);
+    \draw [arrow] (plant) -- node [above] {$\tilde{y}(t)$} (output);
+\end{tikzpicture}\end{center}
+    \item To formulate a suitable mathematical problem to estimate/compute the values of the vector of parameters $\theta$ in such a way that our mathematical model is going to describe the behavior of real system as well as possible.
+for example:
+\[
+\hat{\theta} = \arg \min\limits_{\theta \in S} f(\theta) = \arg \min\limits_{\theta} \|\tilde{y} - f(\tilde{u}, \theta)\|_2
+\] 
+J(.) here is a \textbf{cost function}. In this case, it is the second norm of the differece of $\tilde{y}$ and $f(\tilde{u}, \theta)$.\newline
+
+At this stage, the difference between grey-box and black-box models comes into play, since:
+\begin{itemize}
+    \item In grey-box model: $f(\tilde{u},\theta)$ will, in general depends in a complex, non-linear manner from $\theta$, \textbf{leading to multi-minima convex cost function which is really hard to be minimize}\\ \\
+    While\\
+    \item In black-box model: $f(\tilde{u},\theta)$ will be selected by the user in order to depend linearly from $\theta$,if possible, or in the simplest possible way, \textbf{leading to a single-minima convex funciton to be minimized}, which is much easier in comparison.
+\end{itemize}
+\end{enumerate}
+
