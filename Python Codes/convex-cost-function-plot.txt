@@ -1,0 +1,43 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+# Define the convex cost function
+def convex_cost_function(theta1, theta2):
+    return theta1**2 + theta2**2
+
+# Create a grid of theta1 and theta2 values
+theta1 = np.linspace(-5, 5, 400)
+theta2 = np.linspace(-5, 5, 400)
+theta1, theta2 = np.meshgrid(theta1, theta2)
+
+# Compute the cost function values
+J_convex = convex_cost_function(theta1, theta2)
+
+# Create the plot
+fig = plt.figure(figsize=(12, 6))
+
+# 3D plot of the convex cost function
+ax1 = fig.add_subplot(121, projection='3d')
+surf = ax1.plot_surface(theta1, theta2, J_convex, cmap='plasma', edgecolor='none')
+
+# Adjust view angle
+ax1.view_init(elev=30, azim=240)
+ax1.set_xlabel(r'$\theta_1$')
+ax1.set_ylabel(r'$\theta_2$')
+ax1.set_zlabel(r'$J(\theta_1, \theta_2)$')
+
+# 2D contour plot of the convex cost function
+ax2 = fig.add_subplot(122)
+contour = ax2.contourf(theta1, theta2, J_convex, levels=30, cmap='plasma')
+plt.colorbar(contour, ax=ax2)
+
+# Mark the global minimum
+ax2.scatter(0, 0, color='red', s=50, label='Global Minimum')
+ax2.set_xlabel(r'$\theta_1$')
+ax2.set_ylabel(r'$\theta_2$')
+ax2.legend()
+
+plt.tight_layout()
+plt.show()
+

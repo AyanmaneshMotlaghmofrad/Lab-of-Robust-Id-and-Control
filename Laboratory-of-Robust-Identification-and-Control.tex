@@ -28,10 +28,12 @@
 \usepackage{tikz} %for block diagrams
 \usetikzlibrary{positioning}
 
+% Force all math to use \displaystyle by default
+\everymath{\displaystyle}
 
 \definecolor{myblue}{RGB}{30, 131, 197}
 \definecolor{mygreen}{HTML}{25da18}
-\definecolor{myyellow}{RGB}{230, 153, 24}
+\definecolor{myyellow}{RGB}{255, 255, 0}
 \definecolor{mygrey}{RGB}{100, 100, 100}
 \definecolor{myred}{RGB}{255, 55, 55}
 
@@ -40,6 +42,15 @@
     colframe=mygreen!30, % Frame color
     fonttitle=\bfseries,  % Title font
     title=#1,             % Title
+    coltitle = black,   %title color
+    sharp corners=southwest,
+}
+\newtcolorbox{QandAbox}[1][]{
+    colback=myred!5,   % Background color
+    colframe=myred!20, % Frame color
+    fonttitle=\bfseries,  % Title font
+    title=#1,             % Title
+    coltitle = black,   %title color
     sharp corners=southwest,
 }
 % Do not indent paragraphs
