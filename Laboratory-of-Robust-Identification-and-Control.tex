@@ -26,10 +26,9 @@
 \usepackage{xcolor}
 \usepackage{tcolorbox}
 \usepackage{tikz} %for block diagrams
-\usetikzlibrary{positioning}
+\usepackage{amssymb}
 
-% Force all math to use \displaystyle by default
-\everymath{\displaystyle}
+\usetikzlibrary{positioning}
 
 \definecolor{myblue}{RGB}{30, 131, 197}
 \definecolor{mygreen}{HTML}{25da18}
@@ -48,6 +47,15 @@
 \newtcolorbox{QandAbox}[1][]{
     colback=myred!5,   % Background color
     colframe=myred!20, % Frame color
+    fonttitle=\bfseries,  % Title font
+    title=#1,             % Title
+    coltitle = black,   %title color
+    sharp corners=southwest,
+}
+
+\newtcolorbox{example}[1][]{
+    colback=mygrey!3,   % Background color
+    colframe=mygrey!20, % Frame color
     fonttitle=\bfseries,  % Title font
     title=#1,             % Title
     coltitle = black,   %title color
@@ -89,6 +97,12 @@
 \author{A. Ayanmanesh Motlaghmofrad}
 \date{A.Y. 2024/2025}
 
+
+% Force all math to use \displaystyle by default
+\everymath{\displaystyle}
+
+\linespread{1.2} % Adjusts line spacing to 1.5
+
 \begin{document}
 \maketitle
 \tableofcontents
@@ -100,7 +114,7 @@
 % ---------------------------------------------------------------------
 \input{chapters/introduction}
 \input{chapters/System Identification}
-
+\input{chapters/Set-membership-identification}
 
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
