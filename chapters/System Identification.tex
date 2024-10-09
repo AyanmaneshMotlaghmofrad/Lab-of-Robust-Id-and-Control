@@ -98,6 +98,7 @@ where \(y = [y(3) y(4) ... y(H)]^T, \theta = [\theta_1 \theta_2 ... \theta_5]^T)
     \cdots & \cdots & \cdots & \cdots & \cdots   \\
     -y(H-1) & -y(H-2) & u(H) & u(H-1) & u(H-2)
     \end{matrix} 
+    \label{eq:regressor}
     \right]\\
 \end{equation}
 
@@ -186,8 +187,8 @@ y(k) = -\theta_1 y(k - 1) - \theta_2 y(k - 2) + \theta_3 u(k) + \theta_4 u(k - 1
 Additionally, considering EIV form:
 \[
 \begin{cases}
-    \tilde{y}(k) = y(k) + \eta{k}\\
-    \tilde{u}(k) = u(k) + \zeta{k}
+    \tilde{y}(k) = y(k) + \eta(k)\\
+    \tilde{u}(k) = u(k) + \zeta(k)
 \end{cases}
 \]
 
@@ -211,7 +212,7 @@ By replacing \(y(k)\) and \(u(k)\) in the difference equation of the system the 
  \theta_5(\tilde{u}(k-2) + \zeta(k-2)) \\[1ex] 
 \Rightarrow \\[1ex]
 \tilde{y}(k)= -\theta_1 \tilde{y}(k - 1) - \theta_2 \tilde{y}(k - 2) + \theta_3 \tilde{u}(k) + \theta_4 \tilde{u}(k - 1) + \theta_5 \tilde{u}(k - 2) \\[1ex]
-\textcolor{red}{\fbox{\textcolor{black}{$+ \theta_1\eta(k-1) + \theta_2\eta(k-2) - \theta_3\tilde{u}(k) - \theta_4\tilde{u}(k-1) - \theta_5\tilde{u}(k-2) $}}} =: + e(k) \\
+\textcolor{red}{\fbox{\textcolor{black}{$+ \theta_1\eta(k-1) + \theta_2\eta(k-2) - \theta_3\tilde{u}(k) - \theta_4\tilde{u}(k-1) - \theta_5\tilde{u}(k-2) + \eta(k) $}}} =: + e(k) \\
 \end{array}
 \]
 Hence:
@@ -314,11 +315,9 @@ The block diagram scheme of the abovementioned equation is drawn hereunder.\\
 
 
 
-LS estimation is going to make sense, if and only if the sensor used for collecting data affect the collected data with a measurement noise obtained as a random, white signal \(e(k)\) that is filtered by the denominator of the system to be identified, \textbf{which does not make sense}!!!\\
+LS estimation is going to make sense, if and only if the sensor used for collecting data affect the collected data with a measurement noise obtained as a random, white signal \(e(k)\) that is filtered by the denominator of the system to be identified, \textbf{which does not make sense}!!!; the name of this setting is \textbf{\textit{Error-in-Equation}} setting, which does not correspond to data collection in practical situation, since the sensor does not know how to filter the noise to obtain \(e(k)\) that are probabilistically independent.\\
 
-\newpage
-
-Our general conclusion is that Least-Square estimation should not be used when our collected via \textbf{a real experiment, EIV setting or OE setting}; that is, when we collect data from the experiment, even if the input is perfectly known, the output would be corrupted by additive or multiplicative noise by the data; using these data samples, LS method does not enjoy consistency property. However, Assumption 1 is satisfied and perfectly make sense when the LTI system to be identified is such that \(D(z) =  1\).\\
+Our general conclusion is that Least-Square estimation should not be used when our collected via \textbf{a real experiment, EIV setting or OE setting}(OE is a subset of EIV problem, meaning that the input signal is perfectly known and the uncertainty affects output measurements dirrectly); that is, when we collect data from the experiment, even if the input is perfectly known, the output would be corrupted by additive or multiplicative noise by the data; using these data samples, LS method does not enjoy consistency property. However, Assumption 1 is satisfied and perfectly make sense when the LTI system to be identified is such that \(D(z) =  1\).\\
 \[
 D(z) = 1 \Rightarrow
 \begin{cases}
@@ -329,7 +328,8 @@ $}}}\\
 $}}}
 \end{cases}
 \]
-The reason is that when \(D(z) = 1\), the equation error \(e(k)\) is actually playing the role of the output measurement error \(\eta(k)\), which means i.i.d by definition, thereby satisfying also assumption 2. Now, some identification problems where both assumptions are satisfied.
+The reason is that when \(D(z) = 1\), the equation error \(e(k)\) is actually playing the role of the output measurement error \(\eta(k)\), which means i.i.d by definition, thereby satisfying also assumption 2. Now, some identification problems where both assumptions are satisfied.\\
+
 \begin{example}[Examples that satisfies assuptions of the consistency property]
 \textbf{1) A Finite-Pulse Response system} is defined in the following fashion:\\
     \(\mathbb{S}: y(k) = \theta_1 u(k) + \theta_2 u(k-1) + \cdots + \theta_n u(k-n+1)\)\\
@@ -354,8 +354,13 @@ Measured samples of the output have the following form:\\
 \tilde{y} = \theta_1 f_1(u(k)) + \theta_2 f_2(u(k)) + \cdots + \theta_n f_n(u(k)) + e(k)
 \end{array}
 \)\\
-Examples of functions \(f_n\) can be any set of such basis functions as polinomials or sinusoidal functions.\\
+such basis functions as polinomials or sinusoidal functions.\\
 Where again, \(e(.) = \eta(.) \).\\
+\end{example}
+\begin{example}
+Examples of functions \(f_n\) can be any set of 
+In this case, the error \(e(k)\) enters the equation in an \textit{Error-in-Equation} fashion, which is required to satisfy the second assumption of the consistency property of LS.
+
 \begin{center}
 \begin{tikzpicture}[auto, node distance=2.5cm, >=latex]
     % Define styles
@@ -386,9 +391,16 @@ Where again, \(e(.) = \eta(.) \).\\
 In these cases, both assumptions are satisfied, since, by assumption \(\eta\) is considered to be i.i.d, and since the error directly enters the output the first assumption is satisfied, which means:\\
 \(\lim\limits_{H \to \infty} \hat{\theta}_{LS} = \theta\)\\
 \end{example}
-\newpage
+
 what is critical is the combination of the two assumptions, and no matter what is the structure of the system, we can always manage to define \(e(k)\) in a way that it satisfies the first assumption. The problem is that we also have to impose an additional condition, being i.i.d, on \(e(k)\) so that also the second assumption is satisfied, while based on the system equation and the way we defined \(e(k)\), this condition might not be satisfied.\\
 
 Our next step is to reformulate this problem in a different fashion, by modifying assumption 2. In another words, it is aimed to replace assumption 2 by a "weaker assumption." This change of perspective leads to what we call \textit{Set-membership} approach to system identification.\\
 
+\begin{QandAbox}[What about the unreachable and unobservable modes of the system?]
+This is a somehow phylosophical question, which can be answered in two way:
+\begin{enumerate}
+\item From the practical point of view, at most engineering cases, the system that is designed does not include unobservable modes that are unstable. 
+\item From a phylosophical point of view, these modes cannot be identified through input-output data collection.
+\end{enumerate}
+\end{QandAbox}
 

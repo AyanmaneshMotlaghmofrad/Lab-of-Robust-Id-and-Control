@@ -1,0 +1,159 @@
+\chapter{Laboratory 01: solution}
+
+Upon successful completion of this homework, students will
+\begin{enumerate}
+\item Be able to compute Least Squares (`2 norm) and Least `∞ norm parameter estimation for
+Discrete-time LTI systems.
+\item Be able to analyze properties and limitations of the considered estimators
+\end{enumerate}
+
+The plant to be estimated is a continuous-time LTI dynamical system assumed to be exactly described by the following transfer function:
+\[
+G_p(s) = \frac {100}{s^2 + 1.2 s + 1}
+\]
+
+Assuming the sampling time \(T_s = 1\), the following script is used for discretizing the transfer function of the sysetm, using \textit{zoh}, or zero-order-hold method.
+
+\[G_d = c2d(G_p, Ts, 'zoh')\]
+
+The result going to be of the following form:
+
+\[G_d(z) = \frac{N(z)}{D(z)}\]
+
+The result of this command is as follows:
+
+\[
+G_d(z) = \frac{32.24z + 21.41}{z^2 - 0.7647z + 0.3012}
+\]
+
+Now, the input of the system is considered to be samples of a uniformly distributed random variable. The command \textit{\(u = rand(N,1)\)} is used at this end. \(N\) is considered to be 1000. Then, the command \textit{ \(y =\)lsim(\(G_d, u, Ts)\)} is used to simulate \textbf{noise-free} output samples. Here, it is assumed that the input of the system is exactly known.
+
+
+\subsubsection{\(\theta_{LS}\) in ideal noise-free setting}
+The regression matrix \(A\) and output vector \(b\), are shaped as follows. It is worthwhile to mention that, in this case, since the samples are noise free, \(N = 7\) suffice to obtain exactly the the values of the parameters.
+
+\[
+    y_{Noise Free} = A_{Noise Free}\theta
+\]
+where \(y = [y(3) y(4) ... y(N)]^T, \theta = [\theta_1 \theta_2 ... \theta_5]^T)\), and
+\[
+    A = \left[
+    \begin{matrix}
+    -y(2) & -y(3) & u(3) & u(2) & u(1) \\
+    -y(3) & -y(2) & u(4) & u(3) & u(2) \\
+    \cdots & \cdots & \cdots & \cdots & \cdots   \\
+    \cdots & \cdots & \cdots & \cdots & \cdots   \\
+    -y(N-1) & -y(N-2) & u(N) & u(N-1) & u(N-2)
+    \end{matrix} 
+    \right]\\
+\]
+The command used for deriving \(\theta's\) is:
+\[
+\theta_{LS} = y \ A
+\]
+
+It can be seen that the parameters obtained in this way are exactly parameters of the discretized transferfunction, except for arithmatic roundings.
+\[
+\begin{bmatrix}
+    \theta_{LS} & \theta_{Gd} \\
+    -0.7647 & -0.7647 \\
+     0.3012 & 0.3012 \\
+    -0.0000 & 0 \\
+    32.2369 & 32.2369 \\
+    21.4103 & 21.4103
+\end{bmatrix}
+\]
+
+\subsubsection{\(\theta_{LS}\) in Equation-Error setting}
+In the second part, it is asked to repeat the process of estimation, simulating an error that affect the equation. In this case the collected measurement y are give by:
+\[
+D_d(q^{-1})y_t = N_d(q^{-1})u_t + e_t
+\]
+\begin{QandAbox}
+This assumption about the noise structure is theoretical, and it is not according to read data acquisition setting, which is Error-in-Variable setting or, assuming input to be exactly known Output-Error setting
+\end{QandAbox}
+Here, the error, \(e\), is considered to be a normaly distributed noise with standard deviation 5.
+\[
+e = 5 * randn(N,1)
+\]
+
+To create output data samples that is affected in this manner, the noise entering each output sample should be filtered by \(D(z)\)the denuminator of \(G_d\). Therefore the following MATLAB code should be used:
+\[
+\text{[num, den]} = tfdata(Gd, 'v')
+y\_EE = lsim(Gd,u) + lsim(tf(1,den),e)
+\]
+
+In this case, the regression matrix is shaped by the noisy output samples. Hence:
+\(y_{EE} = [y_{EE}(3) \: y_{EE}(4) ... y_{EE}(N)]^T 
+\)
+\[
+    A = \left[
+    \begin{matrix}
+    -y_{EE}(2) & -y_{EE}(3) & u(3) & u(2) & u(1) \\
+    -y_{EE}(3) & -y_{EE}(2) & u(4) & u(3) & u(2) \\
+    \cdots & \cdots & \cdots & \cdots & \cdots   \\
+    \cdots & \cdots & \cdots & \cdots & \cdots   \\
+    -y_{EE}(N-1) & -y_{EE}(N-2) & u(N) & u(N-1) & u(N-2)
+    \end{matrix} 
+    \right]\\
+\]
+
+The result of the Least square algorithm is going to be as follow:
+\[
+\begin{bmatrix}
+    \theta_{EE} & \theta_{Gd} \\
+    -0.7762 & -0.7647 \\
+     0.3116 & 0.3012 \\
+     0.2078 & 0 \\
+    32.2405 & 32.2369 \\
+    21.0843 & 21.4103
+\end{bmatrix}
+\]
+As it can be seen, the result is very close to the observed values. Since this structure of the noise satisfies both assumptions of the consistency property of Least Squares, it is guaranteed that as \(N\) tends to infinity, the values of \(\theta\) will converge to the true values, regardless of how large the standard deviation of the noise affecting
+
+\subsubsection{\(\theta_{LS}\) in Output-Error setting}
+The noise in this setting directly affect the output measurements
+\[
+y_t = G_d(q^{-1})u_t + \eta_t
+\]
+\begin{QandAbox}
+This setting is a good structure compliant with the real data acquisition setting.
+\end{QandAbox}
+Here, the error, \(\eta_t\), is considered to be a normaly distributed noise with standard deviation 5.
+\[
+eta = 5 * randn(N,1)
+\]
+
+To create output data samples that is affected in this manner, the following MATLAB code should be used:
+\[
+y\_OE = lsim(Gd,u) + eta
+\]
+
+In this case, the regression matrix is shaped by the noisy output samples. Hence:
+\(y_{OE} = [y_{OE}(3) \: y_{OE}(4) ... y_{OE}(N)]^T 
+\)
+\[
+    A = \left[
+    \begin{matrix}
+    -y_{OE}(2) & -y_{OE}(3) & u(3) & u(2) & u(1) \\
+    -y_{OE}(3) & -y_{OE}(2) & u(4) & u(3) & u(2) \\
+    \cdots & \cdots & \cdots & \cdots & \cdots   \\
+    \cdots & \cdots & \cdots & \cdots & \cdots   \\
+    -y_{OE}(N-1) & -y_{OE}(N-2) & u(N) & u(N-1) & u(N-2)
+    \end{matrix} 
+    \right]\\
+\]
+
+The result of the Least square algorithm is going to be as follow:
+\[
+\begin{bmatrix}
+    \theta_{OE} & \theta_{Gd} \\
+    -0.5369 & -0.7647 \\
+     0.1352 & 0.3012 \\
+    -0.2887 & 0 \\
+    32.0653 & 32.2369 \\
+    28.1921 & 21.4103
+\end{bmatrix}
+\]
+Since this noise structure does not satisfy the second assumption of the consistency property of the least square method, no matter how large \(N\) is, the estimation values are not going to converge to the real values.
+
