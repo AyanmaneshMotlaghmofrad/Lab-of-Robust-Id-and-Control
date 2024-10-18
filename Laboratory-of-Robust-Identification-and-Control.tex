@@ -27,8 +27,9 @@
 \usepackage{tcolorbox}
 \usepackage{tikz} %for block diagrams
 \usepackage{amssymb}
-
+\usepackage{enumitem} 
 \usetikzlibrary{positioning}
+\usepackage{xcolor}
 
 \definecolor{myblue}{RGB}{30, 131, 197}
 \definecolor{mygreen}{HTML}{25da18}
@@ -63,6 +64,21 @@
 }
 % Do not indent paragraphs
 \usepackage[parfill]{parskip}
+
+\lstset{
+    basicstyle=\ttfamily\scriptsize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny,
+    stepnumber=1,
+    numbersep=8pt,
+    frame=single,
+    breaklines=true,
+    captionpos=b
+}
+
 
 % In case of an image at the bottom, but the footnote below the image (without this the image will be below the footnote)
 \usepackage[bottom]{footmisc}
@@ -117,7 +133,7 @@
 \input{chapters/Set-membership-identification}
 
 \input{chapters/lab-01}
-% ---------------------------------------------------------------------
+\input{chapters/lab-02}% ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
 

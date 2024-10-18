@@ -1,0 +1,74 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+
+# Parameters for D_theta (an ellipse)
+center = np.array([0.5, 0.5])  # Center of the ellipse
+width = 1.0                     # Width of the ellipse
+height = 0.5                    # Height of the ellipse
+rotation_angle = np.radians(30)  # Rotation angle in radians
+
+# Generate points for the ellipse
+theta = np.linspace(0, 2 * np.pi, 100)
+x = (width / 2) * np.cos(theta)
+y = (height / 2) * np.sin(theta)
+
+# Rotation matrix
+rotation_matrix = np.array([[np.cos(rotation_angle), -np.sin(rotation_angle)],
+                             [np.sin(rotation_angle),  np.cos(rotation_angle)]])
+
+# Rotate the ellipse
+rotated_points = rotation_matrix @ np.vstack((x, y))
+rotated_x = rotated_points[0, :] + center[0]
+rotated_y = rotated_points[1, :] + center[1]
+
+# Calculate the minimum and maximum values
+min_theta1 = np.min(rotated_x)
+max_theta1 = np.max(rotated_x)
+min_theta2 = np.min(rotated_y)
+max_theta2 = np.max(rotated_y)
+
+# Create a figure and axis
+fig, ax = plt.subplots()
+
+# Plot the rotated ellipse representing D_theta
+ax.plot(rotated_x, rotated_y, label=r'$\mathbb{D}_\theta$', color='blue')
+
+# Create a rectangle representing the bounding box
+bounding_box = patches.Rectangle((min_theta1, min_theta2), max_theta1 - min_theta1, max_theta2 - min_theta2,
+                                  linewidth=2, edgecolor='red', facecolor='none', label='Bounding Box')
+
+# Add the rectangle to the plot
+ax.add_patch(bounding_box)
+
+# Set labels for axes with minimum and maximum values
+ax.set_xlabel(r'$\theta_1$')
+ax.set_ylabel(r'$\theta_2$')
+ax.set_title(r'Bounding box and $\mathbb{D}_\theta$')
+
+# Annotate minimum and maximum points with underlining and overlining
+def annotate_with_line(ax, text, xy, line_y_offset, color='black', line_width=1):
+    # Annotate the text
+    text_obj = ax.text(xy[0], xy[1], text, ha='center', va='center', fontsize=10)
+    # Get the bounding box of the text
+    bbox = text_obj.get_window_extent(renderer=fig.canvas.get_renderer())
+    # Calculate the line width based on the text width
+    line_width = bbox.width / fig.dpi  # Convert from pixels to data coordinates
+    # Draw a line for underlining or overlining
+    ax.plot([xy[0] - line_width / 2, xy[0] + line_width / 2], 
+            [xy[1] + line_y_offset] * 2, color=color, linewidth=1)
+
+# Underline and overline annotations
+annotate_with_line(ax, r'$\theta_{1}$', (min_theta1, center[1]), line_y_offset=-0.05)
+annotate_with_line(ax, r'$\theta_{1}$', (max_theta1, center[1]), line_y_offset=-0.05)
+annotate_with_line(ax, r'$\theta_{2}$', (center[0], min_theta2), line_y_offset=0.05)
+annotate_with_line(ax, r'$\theta_{2}$', (center[0], max_theta2), line_y_offset=0.05)
+
+# Show grid and set aspect ratio to equal
+ax.legend()
+ax.grid(True)
+plt.axis('equal')
+plt.xlim(-0.5, 1.5)
+plt.ylim(-0.5, 1.5)
+plt.show()
+

@@ -1,0 +1,47 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import signal
+
+# Define a reasonable range for theta_1 and theta_2
+theta_1_range = np.linspace(0.5, 2.0, 5)  # Range for theta_1
+theta_2_range = np.linspace(0.5, 2.0, 5)  # Range for theta_2
+
+# Frequency range for Nichols plot
+frequencies = np.logspace(-1, 2, 500)
+
+# Arrays to store the min and max of magnitude and phase
+magnitude_min = np.inf * np.ones_like(frequencies)
+magnitude_max = -np.inf * np.ones_like(frequencies)
+phase_min = np.inf * np.ones_like(frequencies)
+phase_max = -np.inf * np.ones_like(frequencies)
+
+# Loop over the range of theta_1 and theta_2 to find the min and max curves
+for theta_1 in theta_1_range:
+    for theta_2 in theta_2_range:
+        # Transfer function: G(s) = theta_2 / (s + theta_1)
+        system = signal.TransferFunction([theta_2], [1, theta_1])
+        w, mag, phase = signal.bode(system, frequencies)
+        
+        # Update the min and max values
+        magnitude_min = np.minimum(magnitude_min, mag)
+        magnitude_max = np.maximum(magnitude_max, mag)
+        phase_min = np.minimum(phase_min, phase)
+        phase_max = np.maximum(phase_max, phase)
+
+# Initialize Nichols plot
+plt.figure(figsize=(8, 6))
+
+# Plot Nichols diagram and fill the area between the min and max curves
+plt.fill_between(phase_min, magnitude_min, magnitude_max, color='pink', alpha=0.5)
+plt.plot(phase_min, magnitude_min, 'k--', label='Min Bound')
+plt.plot(phase_max, magnitude_max, 'k--', label='Max Bound')
+plt.title('Nichols Diagram with Uncertainty (Shaded Region)')
+plt.xlabel('Phase (degrees)')
+plt.ylabel('Magnitude (dB)')
+plt.grid(True)
+plt.legend()
+
+# Show the plot
+plt.tight_layout()
+plt.show()
+

@@ -1,0 +1,37 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Create figure and axis
+fig, ax = plt.subplots(figsize=(8, 8))
+
+# Parametric functions to create a non-convex, curvy shape
+theta = np.linspace(0, 2 * np.pi, 500)
+r = 2 + np.sin(3 * theta)  # Modify this to create a curvy, irregular shape
+x = r * np.cos(theta) + 3  # Center the shape around (3, 3)
+y = r * np.sin(theta) + 3
+
+# Plot the non-convex region
+ax.fill(x, y, color='lightblue', edgecolor='blue', linewidth=2, alpha=0.7)
+
+# Scatter random points inside the region for extra complexity
+np.random.seed(0)
+points_x = 2 * np.random.rand(20) + 2
+points_y = 2 * np.random.rand(20) + 2
+ax.scatter(points_x, points_y, color='red', zorder=5)
+
+# Set axis labels and limits
+ax.set_xlabel(r'$\theta_1$', fontsize=14)
+ax.set_ylabel(r'$\theta_2$', fontsize=14)
+ax.set_xlim(0, 6)
+ax.set_ylim(0, 6)
+
+# Add grid, title, and legend
+ax.grid(True, linestyle='--', color='gray', alpha=0.7)
+plt.title(r'Non-Convex Graphical Representation of $\mathbb{D}_\theta$', fontsize=16, pad=20)
+
+# Adjust aspect ratio to equal
+ax.set_aspect('equal', adjustable='box')
+
+# Show the plot
+plt.show()
+

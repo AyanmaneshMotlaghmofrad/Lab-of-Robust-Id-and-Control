@@ -207,12 +207,12 @@ Also in this case, the same result is going to be obtained.
 By replacing \(y(k)\) and \(u(k)\) in the difference equation of the system the following is obtained:
 \[
 \begin{array}{l}
-\tilde{y}(k) - \eta(k) = -\theta_1(\tilde{y}(k-1)) - \eta(k-1) -\theta_2(\tilde{y}(k-2) - \eta(k-2)) + \theta_3(\tilde{u}(k) + \zeta(k)) \\[1ex] 
-+ \theta_4(\tilde{u}(k-1) + \zeta(k-1))
- \theta_5(\tilde{u}(k-2) + \zeta(k-2)) \\[1ex] 
+\tilde{y}(k) - \eta(k) = -\theta_1(\tilde{y}(k-1)) - \eta(k-1) -\theta_2(\tilde{y}(k-2) - \eta(k-2)) + \theta_3(\tilde{u}(k) + \xi(k)) \\[1ex] 
++ \theta_4(\tilde{u}(k-1) + \xi(k-1))
+ \theta_5(\tilde{u}(k-2) + \xi(k-2)) \\[1ex] 
 \Rightarrow \\[1ex]
 \tilde{y}(k)= -\theta_1 \tilde{y}(k - 1) - \theta_2 \tilde{y}(k - 2) + \theta_3 \tilde{u}(k) + \theta_4 \tilde{u}(k - 1) + \theta_5 \tilde{u}(k - 2) \\[1ex]
-\textcolor{red}{\fbox{\textcolor{black}{$+ \theta_1\eta(k-1) + \theta_2\eta(k-2) - \theta_3\tilde{u}(k) - \theta_4\tilde{u}(k-1) - \theta_5\tilde{u}(k-2) + \eta(k) $}}} =: + e(k) \\
+\textcolor{red}{\fbox{\textcolor{black}{$+ \theta_1\eta(k-1) + \theta_2\eta(k-2) - \theta_3\xi(k) - \theta_4\xi(k-1) - \theta_5\xi(k-2) + \eta(k) $}}} =: + e(k) \\
 \end{array}
 \]
 Hence:

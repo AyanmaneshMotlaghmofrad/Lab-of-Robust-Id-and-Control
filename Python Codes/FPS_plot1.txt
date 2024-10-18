@@ -1,0 +1,41 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define theta_1 and theta_2 ranges
+theta_1 = np.linspace(-10, 10, 400)
+theta_2 = np.linspace(-10, 10, 400)
+
+# Create a meshgrid for plotting
+Theta_1, Theta_2 = np.meshgrid(theta_1, theta_2)
+
+# Define the slope and intercept for the line
+m = 0.5  # slope of the line
+b = 2.5  # intercept
+
+# Define the inequality for the region
+region = Theta_2 < m * Theta_1 + b  # Area below the line
+
+# Create the plot
+plt.figure(figsize=(8, 6))
+
+# Plot the region where the inequality holds (below the line)
+plt.contourf(Theta_1, Theta_2, region, levels=[0, 1], colors=['lightgreen'], alpha=0.7)
+
+# Plot the boundary line
+plt.plot(theta_1, m * theta_1 + b, 'r--', label=r'$\theta_2 = 0.5 \theta_1 + 2.5$')
+
+# Fill the area above the line with white
+plt.fill_between(theta_1, m * theta_1 + b, 10, color='white', alpha=0)  # Fill above the line
+
+# Labeling
+plt.title(r'$\theta_2 \geq 0.5 \theta_1 + 2.5$')
+plt.xlabel(r'$\theta_1$')
+plt.ylabel(r'$\theta_2$')
+plt.legend()
+plt.grid(True)
+plt.xlim([-10, 10])
+plt.ylim([-10, 10])
+
+# Show the plot
+plt.show()
+
