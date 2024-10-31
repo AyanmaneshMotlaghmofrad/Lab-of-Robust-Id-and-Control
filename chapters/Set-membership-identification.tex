@@ -104,7 +104,7 @@ Considering this a-priori information about the structure of the course, and a-p
 \[
 \begin{array}{l}
 \tilde{y}(k)= -\theta_1 \tilde{y}(k - 1) - \theta_2 \tilde{y}(k - 2) + \theta_3 \tilde{u}(k) + \theta_4 \tilde{u}(k - 1) + \theta_5 \tilde{u}(k - 2) \\[1ex]
-\textcolor{red}{\fbox{\textcolor{black}{$+ \theta_1\eta(k-1) + \theta_2\eta(k-2) - \theta_3\tilde{u}(k) - \theta_4\tilde{u}(k-1) - \theta_5\tilde{u}(k-2) + \eta(k) $}}} =: + e(k) \\
+\textcolor{red}{\fbox{\textcolor{black}{$+ \theta_1\eta(k-1) + \theta_2\eta(k-2) - \theta_3\xi(k) - \theta_4\xi(k-1) - \theta_5\xi(k-2) + \eta(k) $}}} =: + e(k) \\
 \end{array}
 \]
 
@@ -526,8 +526,7 @@ As you can see in the box below, here, we are expanding the space we are conside
 \begin{align}
 \fcolorbox{red}{white}{$\mathcal{D}_{\theta,\eta,\xi} = \left\{ \theta \in \mathbb{R}^p, \eta \in \mathbb{R}^H, \xi \in \mathbb{R}^H\right\}$}
 \end{align}
-
-A simplified graphical varsion is going to be like the following graph:
+A simplified graphical version is shown in the following graph. \textbf{Now, the FPS is the projection of the EFPS on the parameter space}.
 
 \begin{figure}[htbp]  % "h" for here, "t" for top, "b" for bottom, "p" for float page
     \centering
@@ -543,8 +542,8 @@ In this case,
 That is,
 \[
 \begin{array}{rcl}
-\theta_k & = & \min_{\theta \in \mathbb{D}_\theta, \eta, \xi} \theta_k \text{ subject to } \tilde{y}(k) - \eta(k) + \sum_{i=1}^{n} \theta_i(\tilde{y}(k-i) - \eta(k-i)) \\[1ex]
-& = & \theta_{n+1}(\tilde{u}(k) - \xi(k)) + \sum_{j=1}^{m} \theta_{n+j+1}(\tilde{y}(k-j) - \xi(k-j)), \\[1ex]
+\theta_k & = & \min_{\theta \in \mathbb{D}_{\theta, \eta, \xi}} \theta_k \text{ subject to } \tilde{y}(k) - \eta(k) + \sum_{i=1}^{n} \theta_i(\tilde{y}(k-i) - \eta(k-i)) \\[1ex]
+& & + \theta_{n+1}(\tilde{u}(k) - \xi(k)) + \sum_{j=1}^{m} \theta_{n+j+1}(\tilde{y}(k-j) - \xi(k-j)), \\[1ex]
 & & \quad \forall k > n+1, \, |\xi(k)| \leq \Delta \xi, \, |\eta(k)| \leq \Delta \eta, \, \forall k
 \end{array}
 \]
@@ -554,4 +553,220 @@ The drawback is that EFPS is a non-convex set defined by \textbf{polynomial} (\t
 \begin{factbox}[Professor's Quote:]
 To the best of my knowledge, in the domain of non-convex functions, the only class that can be optimized up to the global minimum is the class of non-convex functions with polynomial constraints.
 \end{factbox}
+
+\begin{QandAbox}[Boundedness of the noise]
+Practically, the assumption that the noise can take any value is unreasonable. Since sensors are used for measurements and are designed to be stable and precise, it is not realistic for the noise to take on any value. For this reason, it makes sense to assume bounded noise.
+\end{QandAbox}
+
+\begin{factbox}[What signal to use as input signal?]
+If the signal applied to a system is simply a \textbf{ramp} or \textbf{step} signal, after the transient period, the output will reflect the generalized DC gain of the system when it reaches steady-state. Therefore, a staircase of steps with varying amplitudes combined with a random signal may be a good choice to stimulate different modes of the system.
+\end{factbox}
+
+Refer to Lab 01, Problem 2, for least squares with \( l_\infty \)-norm.
+
+Consider the following FPS. Due to its non-convexity, the optimizer may return a local minimum, which is not desirable.
+
+\begin{figure}[htbp]  % "h" for here, "t" for top, "b" for bottom, "p" for float page
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/non-convex-FPS.png}
+    \caption{A simplified, general graph of EFPS.}
+    \label{fig:non-convex-FPS}
+\end{figure}
+
+
+
+\subsubsection{Convext relaxation for polynomial optimization problem}
+General ideas and intuitions are as follows: \\
+let's consider the following general polynomial optimizatin problem:
+\[
+\min\limits_{x} f_0(x) \text{ s.t. } 
+\begin{cases}
+f_k(x) \leq 0\: (k\,=\,1,\,2,\, \cdots,\, l)\\
+f_k(x) = 0\: (k\,=\,l+1,\,l+2,1,\cdots,\, m)
+\end{cases}
+\]
+where, $f_0$ and $f_k$ are multivariable polynomials in the optimization variables$x$.
+
+\begin{example}[Example 1]
+\(
+x =
+\begin{bmatrix}
+    x_1 \\
+    x_2 \\
+    x_3
+\end{bmatrix}
+\)\\ \\
+The following is what we call \textit{Polynomial Optimization Problem} \textbf{POP}\\
+\(
+\min (x_1^2 + x_2x_3^3 + x_1^5x_2^3 + 7x_3^2 + \cdots)
+\)\\ \\
+for the second order case:
+\(
+f_0(x) = \theta_0 + \theta_1x_1 + \theta_2x_2 + \theta_3x_1x_3 + \theta_4x_1^2 + \theta_5x_2^2
+\)\\ \\
+\end{example}
+
+\begin{example}[Example 2]
+a constraint POP
+\(
+\min (x_1^2 + 11x_2) \text{ s. t. } 
+\begin{cases}
+x_1^2 - 4 = 0 \\
+x_1^3 + 7x_2 - 13x_1x_2 \leq 0
+\end{cases}
+\)\\ \\
+\end{example}
+
+All POPs can be written in the so-called \textit{epographic} form by introducing a new "slack" variable $\gamma$.
+\[
+\begin{array}{ll}
+    \min\limits_{x} & f_0(x) \\
+    \text{s.t.} & \\
+      &\\
+    & f_1(x) \geq 0 \\
+    & f_2(x) \geq 0 \\
+    & \vdots \\
+    & f_5(x) \geq 0 \\
+    & f_k(x) = 0 \\
+  
+\end{array}
+\quad \Longleftrightarrow \quad
+\begin{array}{ll}
+    \min\limits_{x,\,t}t &  \\
+    \text{s.t.} & \\
+    & f_0(x) \leq t \text{  or  } t - f_0(x) \leq 0 \\
+    & f_1(x) \geq 0 \\
+    & f_2(x) \geq 0 \\
+    & \vdots \\
+    & f_5(x) \geq 0 \\
+    & f_k(x) = 0 \\
+\end{array}
+\]
+
+By rewriting a generic POP in the epigraphic form, we recognize that a generic POP can be seen as the problem of minimizing a linear function over a non-convex set described by polynomial constraints. This is also true for unconstraint POP.
+
+\[
+\begin{array}{ll}
+    \min\limits_{x} & f_0(x) \\
+      &\\
+      &\\
+\end{array}
+\quad \Longleftrightarrow \quad
+\begin{array}{ll}
+    \min\limits_{x,\,t} & t \\
+    \text{s.t.} & \\
+     t - f_0(x) \leq 0 \\
+  
+\end{array}
+\]
+
+A graphical representation of this problem is as follows:
+
+\begin{figure}[htbp]  % "h" for here, "t" for top, "b" for bottom, "p" for float page
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/epigraphic-mini.png}
+    \caption{the geraphical representation of a generic epigraphic minization, each line represent different values of t.}
+    \label{fig:non-convex-FPS}
+\end{figure}
+
+\begin{figure}[htbp]  % "h" for here, "t" for top, "b" for bottom, "p" for float page
+    \centering
+    \includegraphics[width=0.65\textwidth]{images/linprog.png}
+    \caption{Graphical representation of a linear programming over $\theta_1$}
+    \label{fig:non-convex-FPS}
+\end{figure}
+\begin{QandAbox}[Important Remark]
+Since a generic POP can be rewritten in the epigraphic form that is the problem of minimizing a linear function over a non-convex set, the non-convexity of the problem is now completely embedded in the description of the set of constraint.
+\end{QandAbox}
+
+If we want to be able to compute the global optimal solution to the non-convex POP, we have to deal with the non-convexity of the set of constraints.
+
+Now, the idea is to replace the non-convex set with a convex set such that the result of the global optima is equal to that of non-convex.
+
+\subsubsection{Convex-hull of a non-convex set}
+The convex-hull of a non-convex set $S$ is
+the smallest convex set that is including $S$.
+
+
+\begin{figure}[htbp]  % "h" for here, "t" for top, "b" for bottom, "p" for float page
+    \centering
+    \includegraphics[width=0.65\textwidth]{images/convex-hull.png}
+    \caption{convex-hull of a generic non-convex set}
+    \label{fig:non-convex-FPS}
+\end{figure}
+
+The general idea here is that if we are able to write down equation describing convex-hull $C_S$ of the non-convex set $S$:
+\[
+\min\limits_{x \in C_s} f(x) = \min\limits_{x \in S} f(x)
+\]
+where $f(x)$ is a linear function of $x$.
+
+However, in general, computing the mathematical description of the convex haul is quite a difficult problem. For the case of POPS - a particular class of non-convex optimization problem - Lassere et al were able to compute \textbf{a convex relaxation} of $S$ depending on a parameter which is called \textbf{\textit{order of relaxation $\delta$}}.
+
+For a given fixed value of $\delta$ we have the following situation. For different order of relaxation, we obtain different convex sets including the original set. They proved by increasing the order of relaxation, we obtain convex sets that is the convex set of the original set. For the problems we are dealing with, the optimal solution is obtained with a fixed value of relaxation, and convergence is typically really fast. The issue is that the value of the $\delta$ is not known.
+
+\begin{figure}[htbp]  % "h" for here, "t" for top, "b" for bottom, "p" for float page
+    \centering
+    \includegraphics[width=0.65\textwidth]{images/convex-relaxation.png}
+    \caption{convex-hull of a generic non-convex set}
+    \label{fig:non-convex-FPS}
+\end{figure}
+
+\begin{itemize}
+    \item Computation of parameter bounds (PUIs) require the solution to the global optimum of non-convex polynomial optimization problems.
+    
+    \item By applying \textit{Moments theory} (Lasserre) or \textit{Sum-of-squares (SOS) theory} (Chesi, Parrilo), it is possible to build a sequence of \textbf{convex} semidefinite (SDP) optimization problems whose size/complexity depends on a parameter called \textit{order of relaxation} \(\delta\).
+    
+    \item For any given \(\delta\), the following inequalities hold
+    \[
+    \theta^{\delta}_k \leq \theta_k, \quad \overline{\theta}^{\delta}_k \geq \overline{\theta}_k 
+    \]
+    
+    \item Furthermore,
+    \[
+    \lim_{\delta \to \infty} \theta^{\delta}_k = \theta_k, \quad \lim_{\delta \to \infty} \overline{\theta}^{\delta}_k = \overline{\theta}_k
+    \]
+\end{itemize}
+
+In gradient-based algorithms, we have the risk of underestimating the value of the parameters by trapping into local minima, while in this method, rest assured, the true value of the parameters is going to be included in the interval.
+
+In order to solve POPs by means of Lassere convex-relaxation appraoch in MATLAB, we use the following two software, which are MATLAB toolboxes, that can be freely downloaded online:
+\begin{itemize}
+\item SPARSEPOP: given a POP and a value of the order of relaxation $\delta$, provides\textbf{ the SDP relaxed problem.}
+\item Sedumi: is called by SPARSEPOP to solve the obtained convex SDP.
+\end{itemize}
+
+\subsubsection{The lecture after the lab 03}
+In the laboratory, we saw that SparsePOP computes convex relaxation for a given relaxation. The Sediumi toolbox is used to solve the relaxed optimization problem.\\
+
+\subsubsection{Selection of the order of relaxation}
+Let's call $x^*$ the global optimal solution of a given POP, and $x^*$ the solution of the corresponding convex relaxation of order $\delta$.\\
+
+QUESTION: How to selcet $\delta$?\\
+Well, from the theory we have the following results:\\
+\textbf{R1)} 
+\[
+\lim\limits_{\delta \to \infty} f(x^\delta) = f(x^*)
+\]
+which implies, the following, to be unprecise:
+\[
+\lim\limits_{\delta \to \infty} = x^*
+\]
+
+\textbf{R2)}: \(\delta) \geq \lfloor \frac{n_{max}}{2} \rfloor\), where $n_{max}$ is the maximum degree of the polynomial describing the functional and the constraints.\\
+
+\textbf{R3)} the complexity of SDP problem obtained by applying to the original convex relaxation techniques grows exponentially in the order of relaxatoin $\delta$, as well as the number of optimization variables (AKA decision variables) of the original POP.\\
+
+On the other hand, we have the following result too:\\
+
+\textbf{R4)}: For a large class of problems including most of the problems in this course, it is possible to prove that the convergence to the global optimal solution of the original POP is very fast and it is achieved for a finite value of $\delta$. but still the result number 2 should be satisfied.\\
+
+Let's analyze the impact of R1, R2, R3, and R4 on the applicationo of convex relaxation techniques to a set-membership identification problem of an LTI system with EIV assuption about the noise.\\
+
+For SM Id. of LTI system with EIV of a polynomial of order 2, we can start with $\delta =1$. Because we have bi-linear constraints, i.e. polynomial constraints of order 2. Number of optimization variable is given by:
+\[
+P + 2N
+\]
+Where $P$ is the number of parameters to be identified and $N$ is the number of pair of data samples. Since in system identification problem $N$ is going to be quite large in many applications in order to obtain accurate PUI's, the complexity is going to be untractable. Nonetheless, the following result can be exploited:\\
+\textbf{R5)} if the structure of the original POP satisfies a property called running intersection property, it's possible to build a sequency of convex SDP relaxation, involving must less variables.
 

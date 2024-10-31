@@ -1,0 +1,26 @@
+\chapter{Laboratory 03: solution}
+consider the following problem:
+\[
+\begin{array}{c}
+x^* = \arg\,\min\limits_{x} x_1^2 + x_2^2 - 4x_1 - 6x_2 + 13\\
+\text{ s.t. }\\[1em]
+x_1x_2 - 7x_2 = 10\\ [1em]
+x_2 \geq -\frac{1}{2}x_1 +1
+\end{array}
+\]
+The cost function here is a polynomial, which is a sum of \textit{monomial} terms. Each monomial is of the following form:
+\[
+\alpha x_1^{C_1} x_2^{C_2} \cdots x_n^{C_n}
+\]
+
+Let's create a polynomial named \textbf{objPoly}:
+
+\begin{example}
+\begin{lstlisting}[caption=Defining the polynomial]
+objPoly.noTerms = 5;
+objPoly.dimVar = 2;
+objPoly.typeCone = 1; % Here it should always be 1
+objPoly.sizeCone = 1;
+objPoly.degree = [3, 2];
+\end{lstlisting}
+\end{example}

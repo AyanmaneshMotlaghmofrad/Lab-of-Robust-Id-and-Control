@@ -1,5 +1,5 @@
 \chapter{Laboratory 02: solution}
-
+\section{the first problem}
 In this problem we assume that the plant to be identified is exactly described as a discrete-time
 LTI models described by the following transfer function (in the \(q^{-1}\) operator):
 \[
@@ -35,7 +35,10 @@ Considering the difference equation of the system, the following information can
 \item \(n_b\) the number of input samples in the difference equation.
 \item \(t_{min} = \max(\left[n_a +1, n_b\right]\)
 \end{itemize}
-MATLAB code for simulation of the system is as follows:
+MATLAB code for simulation of the system is as follows. Take into account that, alternatively, we could use:
+\[
+\tilde{y} = \text{lsim}(G_p,u) + \text{lsim}(\text{tf}(1,D,1),e);
+\]
 
 \begin{example}
 \begin{lstlisting}[caption=Set-membership estimation with theta bounds and simulation]
@@ -132,4 +135,99 @@ end
 \end{figure}
 
 It can be seen that the "real value" of the parameters is one of point at the top left corner of the \(\mathbb{D}_\theta\).
+
+\section{The second problem}
+In this problem we assume that the plant to be identified is exactly described as a discrete-time
+LTI models described by the following transfer function:
+\[
+G_p(q^{-1}) = \frac{N(q^{-1})}{D(q^{-1})} = \frac{\theta_3 + \theta_4 q^{-1} + \theta_5 q^{-2}}{1 + \theta_1 q^{-1} + \theta_2 q^{-2}} \tag{5}
+\]
+where:
+\[
+\theta = [\theta_1, \theta_2, \theta_3, \theta_4, \theta_5] = [-0.7647, 0.3012, 0, 32.24, 21.41]
+\]
+
+
+Assuming that the uncertainty affecting the input-output data enters the problem according to an equation error structure, the following simulation is to be performed. The input sequence \( u(t) \) is a random sequence uniformly distributed in \([0, 1]\), and the output sequence \( y(t) \) is computed using the following equation:
+
+\[
+    y(t) = -\theta_1 y(t-1) - \theta_2 y(t-2) + \theta_3 u(t) + \theta_4 u(t-1) + \theta_5 u(t-2) + e(t) \tag{7}
+\]
+
+where \( \theta = [\theta_1, \theta_2, \theta_3, \theta_4, \theta_5] \) are the model parameters, and \( e(t) \) is a random sequence uniformly distributed in \([- \Delta e, \Delta e]\). The goal is to collect input and output data to be used for identification purposes.
+
+The simulation setup includes:
+\begin{itemize}
+    \item A random input sequence \( u(t) \), uniformly distributed in \([0, 1]\).
+    \item A random error sequence \( e(t) \), uniformly distributed in \([- \Delta e, \Delta e]\).
+    \item Output \( y(t) \) calculated according to the equation error model.
+\end{itemize}
+
+
+\begin{example}
+\begin{lstlisting}[caption=Set-membership estimation with theta bounds and simulation]
+clear variables
+close all
+format compact
+rng('default')
+%% defining the system
+%LTI 2nd order, a-priori info
+theta = [-0.7647,0.3012,0,32.24,21.41];
+
+num = [theta(3) theta(4) theta(5)]
+den = [1 theta(1) theta(2)];
+
+Gp = tf(num,den,-1);
+
+%% Simulation
+N = 1000;
+na = 2;
+nb = 3;
+tmin = max([na+1,nb]);
+
+y = zeros(N,1);
+u = rand(N,1);
+delta_e = 0.5; %consider 0.1, 1, 10, 100
+for t = tmin:N
+    e = 2*delta_e*rand -delta_e; %uniform between[-delta_e,delta e]
+    y(t) = -theta(1)*y(t-1) -theta(2)*y(t-2) + theta(3)*u(t) + theta(4)*u(t-1)+...
+        theta(5)*u(t-2)+ e;
+end
+\end{lstlisting}
+\end{example}
+
+The relation for feasible parametric set is as follows:
+\[
+\mathbb{D}_\theta = \{\theta \in \mathbb{R}^5: \tilde{y}-e \leq y \leq \tilde{y}+e \:\text{ s.th.   } |e(.)|\leq \Delta_e\} 
+\]
+
+Then, we can formulalte a linprog problem that can be solved as follows:
+\begin{example}
+\begin{lstlisting}[caption=Set-membership estimation with theta bounds and simulation]
+%the rest of the code
+%% PUI problem solving by linprog
+F = eye(5);
+A1 = [-y(tmin-1:N-1), -y(tmin-2:N-2) u(tmin:N) u(tmin-1:N-1) u(tmin-2:N-2)];
+A =[A1;-A1]; %for linprog
+b1 = y(tmin:N) + delta_e;
+b2 = -y(tmin:N) + delta_e;
+b = [b1;b2];
+
+% options = optimoptions('linprog', 'ScaleProblem', 'obj-and-constr', 'Display', 'none');
+% x = linprog(sign * F(i,:)', A, b, [], [], [], [], options);
+
+PUI = zeros(5,2);
+sign = -1; %initialization
+
+for j = 1:2
+    sign = -1*sign;
+    for i = 1:5
+        PUI(i,j) = F(i,:)*linprog(sign*F(i,:)',A,b);
+    end
+end
+
+PUI
+
+\end{lstlisting}
+\end{example}
 

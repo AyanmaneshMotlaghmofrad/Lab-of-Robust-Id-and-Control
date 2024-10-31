@@ -1,5 +1,5 @@
 \chapter{Laboratory 01: solution}
-
+\section{Problem 01}
 Upon successful completion of this homework, students will
 \begin{enumerate}
 \item Be able to compute Least Squares (`2 norm) and Least `∞ norm parameter estimation for
@@ -157,4 +157,86 @@ The result of the Least square algorithm is going to be as follow:
 \]
 Since this noise structure does not satisfy the second assumption of the consistency property of the least square method, no matter how large \(N\) is, the estimation values are not going to converge to the real values.
 
-DO THE LAB 1 WITH NORM INF
+\section{Problem 02}
+Now, we want to convert the minimization of our cost function in a linear programming problem.
+\[
+\theta_\infty = \arg\: \:\min\limits_{\theta \in \mathbb{R}^5}\:\: \|\tilde{y}-A \theta\|_\infty
+\]
+
+Considering \(\gamma_j = b_j - a_j \theta\), where \(a_j\) is the \(j^{\text{th}}\) row of matrix \(A\), based on the definition of the infinity norm, we have:
+\[
+\|\gamma\|_\infty = \max \left( |\gamma_1|, |\gamma_2|, \dots, |\gamma_{N-n}| \right)
+\]
+
+Thus, the optimization problem can be written as:
+\[
+\theta_\infty = \arg \min_{\theta \in \mathbb{R}^5} \max \left( |\gamma_1|, |\gamma_2|, \dots, |\gamma_{N-n}| \right)
+\]
+
+However, this problem is not linear, so we introduce a slack variable \(t\) and reformulate the optimization as:
+\[
+\theta_\infty = \arg \min_{\theta \in \mathbb{R}^5, \, t \in \mathbb{R}} \, t \quad \text{subject to:}
+\]
+\[
+\begin{cases}
+|\gamma_1| \leq t \\
+|\gamma_2| \leq t \\
+\vdots \\
+|\gamma_{N-n}| \leq t
+\end{cases}
+\]
+
+This ensures the problem is now linear. Now, we add this extra parameter \(t\) as the 6th parameter to \(\theta\), and matrices \(A\) and \(b\) for the MATLAB function \texttt{linprog} can be constructed accordingly.
+
+For each constraint \(|\gamma_j| \leq t\), we rewrite it as:
+\[
+|b_j - a_j \theta| \leq t
+\]
+This leads to two inequalities for each \(j\):
+\[
+b_j - a_j \theta \leq t \quad \text{and} \quad -(b_j - a_j \theta) \leq t
+\]
+So we obtain:
+\[
+\left[ -a_j \,\, -1 \right] 
+\begin{bmatrix} \theta \\ t \end{bmatrix} \leq -b_j \quad \text{and} \quad 
+\left[ a_j \,\, -1 \right] 
+\begin{bmatrix} \theta \\ t \end{bmatrix} \leq b_j
+\]
+We aim to minimize the \(\ell_1\)-norm:
+\[
+\|\gamma\|_1 = \sum_{j=1}^{N-n} |\gamma_j| = \sum_{j=1}^{N-n} |b_j - a_j \theta|
+\]
+To linearize the problem, we introduce slack variables \(s_j\) such that:
+\[
+b_j - a_j \theta \leq s_j \quad \text{and} \quad -(b_j - a_j \theta) \leq s_j
+\]
+Thus, the optimization problem becomes:
+\[
+\min_{\theta \in \mathbb{R}^5, s \in \mathbb{R}^{N-n}} \sum_{j=1}^{N-n} s_j
+\]
+subject to:
+\[
+\begin{cases}
+b_j - a_j \theta \leq s_j \\
+-(b_j - a_j \theta) \leq s_j
+\end{cases}
+\]
+
+In matrix form, this can be written as:
+\[
+\begin{bmatrix}
+A & I \\
+-A & I
+\end{bmatrix}
+\begin{bmatrix}
+\theta \\
+s
+\end{bmatrix}
+\leq
+\begin{bmatrix}
+b \\
+-b
+\end{bmatrix}
+\]
+where \(A\) is the matrix with rows \(a_j\), \(I\) is the identity matrix, and \(b\) is the vector of known values.
