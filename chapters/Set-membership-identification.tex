@@ -1,7 +1,7 @@
 \chapter{Set-membership identification}    % For a new chapter (works in book and report class)
 
 Set-membership approach is an alternative to the classical, statistical identification approach. Least-Square method is one possible example of statistical estimation algorithms in the context of estimation.\\
-
+\section{Set-membership identification of single-input-single-output LTI systems}
 \subsubsection{Main ingredients}
 
 We consider a discrete-time system described in the following parametrized regression form:\\
@@ -732,8 +732,8 @@ In gradient-based algorithms, we have the risk of underestimating the value of t
 
 In order to solve POPs by means of Lassere convex-relaxation appraoch in MATLAB, we use the following two software, which are MATLAB toolboxes, that can be freely downloaded online:
 \begin{itemize}
-\item SPARSEPOP: given a POP and a value of the order of relaxation $\delta$, provides\textbf{ the SDP relaxed problem.}
-\item Sedumi: is called by SPARSEPOP to solve the obtained convex SDP.
+\item SparsePOP: given a POP and a value of the order of relaxation $\delta$, provides\textbf{ the SDP relaxed problem.}
+\item Sedumi: is called by SparsePOP to solve the obtained convex SDP.
 \end{itemize}
 
 \subsubsection{The lecture after the lab 03}
@@ -753,7 +753,7 @@ which implies, the following, to be unprecise:
 \lim\limits_{\delta \to \infty} = x^*
 \]
 
-\textbf{R2)}: \(\delta) \geq \lfloor \frac{n_{max}}{2} \rfloor\), where $n_{max}$ is the maximum degree of the polynomial describing the functional and the constraints.\\
+\textbf{R2)}: \(\delta) \geq \lceil \frac{n_{max}}{2} \rceil\), where $n_{max}$ is the maximum degree of the polynomial describing the functional and the constraints.\\
 
 \textbf{R3)} the complexity of SDP problem obtained by applying to the original convex relaxation techniques grows exponentially in the order of relaxatoin $\delta$, as well as the number of optimization variables (AKA decision variables) of the original POP.\\
 
@@ -768,5 +768,200 @@ For SM Id. of LTI system with EIV of a polynomial of order 2, we can start with 
 P + 2N
 \]
 Where $P$ is the number of parameters to be identified and $N$ is the number of pair of data samples. Since in system identification problem $N$ is going to be quite large in many applications in order to obtain accurate PUI's, the complexity is going to be untractable. Nonetheless, the following result can be exploited:\\
-\textbf{R5)} if the structure of the original POP satisfies a property called running intersection property, it's possible to build a sequency of convex SDP relaxation, involving must less variables.
+\textbf{R5)} if the structure of the original POP satisfies a property called \textit{running intersection property}, it's possible to build a sequency of convex SDP relaxation, involving much less variables. (Sparse Convex - relaxation)
 
+\begin{factbox}[about SparsePOP]
+SparsePOP toolbox is able to automatically check whether the original POP satisfies the running intersection property, and if this is the case,
+it applies the \textit{sparse convex relaxation}.
+\end{factbox}
+
+\textbf{R6)} The complexity of SDP problem obtained by applying the sparse convex relaxation to the original POP:
+\begin{itemize}
+\item\textbf{grows exponentially iwth the order of relaxation}.
+\item \textbf{grows linearly with the number of optimization variables}.
+\end{itemize}
+
+\textbf{R6} tell us that the SM - ID problem for LTI system with EIV assumption is computationally tractable for a rather large value of input-output pair of experimentally collected data ($N$), since the problem satisfies the \textbf{running intersection property} and it is characterized by \textbf{bilinear constraints}, which allow us to start with relaxation $\delta =1$.
+
+\begin{QandAbox}
+considering that the problem is computationally tracktable having the constraints are bilinear. can we find a trick to solve a polynomial with large number of parameters, which may be computationally untracktable?
+\end{QandAbox}
+
+\subsubsection{How to formulate the SM - ID problem for an LTI system of order $n$ with EIV noise structrue, in terms of SparsePOP}:\\
+\begin{QandAbox}[Exam matter]
+The following procedure is what should be done to solve the exam problem.
+\end{QandAbox}
+\begin{enumerate}
+\item First, let's write down the FPS and the EFPS. To simplify, here, we consider $n = 2$.\\
+FPS:
+\[
+\begin{array}{c}
+\mathbb{D}_\theta = \{\theta \in \mathbb{R}^5: y(k) + \theta_1 y(k-1) + \theta_2 y(k-2) - \theta_3 u(k) -\theta_4 u(k-1) -\theta_5 u(k-2) = 0 \\
+\forall k = 3,\,4,\,\cdots,\,N, |\eta(k)\leq\Delta\eta, |\xi(k)|\leq \Delta\xi, \forall k \in \mathbb{N} 
+\}
+\end{array}
+\]
+EFPS:
+\[
+\begin{array}{l}
+\mathbb{D}_{\theta,\,\eta,\,\xi}= \{\theta \in \mathbb{R}^5,\, \eta \in \mathbb{R}^N,\,\mathbb{R}^N
+: 
+\tilde{y}(k) - \eta(k)+ \theta_1 \tilde{y}(k-1) - \theta_1\eta(k-1) + \theta_2 \tilde{y}(k-2)\\-\theta_2\eta(k-2) - \theta_3 \tilde{u}(k) + \theta_3\xi(k) -\theta_4 \tilde{u}(k-1) + \theta_4\xi(k-1) -\theta_5 \tilde{u}(k-2) + \theta_5\xi(k-2) = 0 \\
+\forall k = 3,\,4,\,\cdots,\,N,
+|\eta(k)|\leq\Delta\eta, |\xi(k)|\leq \Delta\xi, \forall k \in \mathbb{N} 
+\}
+\end{array}
+\]
+
+PUI:
+\[
+PUI_k = \left[\underline{\theta}_k,\,\overline{\theta}_k \right]
+\]
+where
+\[
+\begin{array}{c}
+\underline{\theta}_k = \min\limits_{\theta \in \mathbb{D}_\theta} \theta_k = \min\limits_{\theta, \eta, \xi \in \mathbb{D}_{\theta, \eta, \xi}} \theta_k \quad \text{s.t.} \\
+\tilde{y}(k) - \eta(k) + \theta_1 \tilde{y}(k-1) - \theta_1\eta(k-1) + \theta_2 \tilde{y}(k-2) - \theta_2\eta(k-2) \\
+- \theta_3 \tilde{u}(k) +\theta_3 \xi(k) - \theta_4 \tilde{u}(k-1) + \theta_4\xi(k-1) - \theta_5 \tilde{u}(k-2) + \theta_5 \xi(k-2) = 0 \quad \forall k = 3,\,4,\,\cdots,\,N,\\
+\eta(k) + \Delta\eta \geq 0, \quad \Delta\eta - \eta(k) \geq 0, \quad \xi(k) + \Delta\xi \geq 0, \quad \Delta\xi - \xi(k) \geq 0 \quad \forall k \in \mathbb{N} 
+\end{array}
+\]
+
+\[
+\begin{array}{c}
+\overline{\theta}_k = \max\limits_{\theta \in \mathbb{D}_\theta} \theta_k = \max\limits_{\theta, \eta, \xi \in \mathbb{D}_{\theta, \eta, \xi}} \theta_k \quad \text{s.t.} \\
+\tilde{y}(k) - \eta(k) + \theta_1 \tilde{y}(k-1) - \theta_1\eta(k-1) + \theta_2 \tilde{y}(k-2) - \theta_2\eta(k-2) \\
+- \theta_3 \tilde{u}(k) +\theta_3 \xi(k) - \theta_4 \tilde{u}(k-1) + \theta_4\xi(k-1) - \theta_5 \tilde{u}(k-2) + \theta_5 \xi(k-2) = 0 \quad \forall k = 3,\,4,\,\cdots,\,N,\\
+\eta(k) + \Delta\eta \geq 0, \quad \Delta\eta - \eta(k) \geq 0, \quad \xi(k) + \Delta\xi \geq 0, \quad \Delta\xi - \xi(k) \geq 0 \quad \forall k \in \mathbb{N} 
+\end{array}
+\]
+\item Formulating the obtained POP in terms of SparsePOP data structure.\\
+Let's consider how to describe in SparsePOP terms the bilinear eqaulity constraints. Considering k = 3.
+\[
+\tilde{y}(3) - \eta(3) + \theta_1 \tilde{y}(2) - \eta(2) + \theta_2 \tilde{y}(1) - \eta(1) \\
+- \theta_3 \tilde{u}(3) + \xi(3) - \theta_4 \tilde{u}(2) + \xi(2) - \theta_5 \tilde{u}(1) + \xi(1) = 0
+\]
+Now, we have to shape our data structure for this inequality.
+\begin{example}
+\begin{lstlisting}
+ineqPolySys{c}.typeCone = -1; equality constraint
+ineqPolySys{c}.dimVar = 5 + 2*N; 
+% P: the number of variables involved, P = 5
+% N: the number of pairs of input-output data samples
+ineqPolySys{c}.degree = 2; %always 2,for bilinear equations
+ineqPolySys{c}.noTerms = 12;
+ineqPolySys{c}.supports = sup_matrix;
+ineqPolySys{c}.coef = [y_tilde(3);-1;y_tilde(2);-1; ...]';
+\end{lstlisting}
+\end{example}
+Support matrix show have as many row as the terms in the constraints and as many constraints as the number of optimization variables $P + 2*N$.
+\newpage
+\begin{figure}[htbp]  % "h" for here, "t" for top, "b" for bottom, "p" for float page
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/support-matrix1.png}
+    \caption{Support matrix for the equality constraints}
+    \label{fig:non-convex-FPS}
+\end{figure}
+\end{enumerate}
+
+Regarding the constraints on the boundedness of the noise, they can be imposed consider a lower bound and upper bound for the variables corresponding to the noise. Look at the solution of lab 03.
+
+\newpage
+
+\section{Set-membership identification of multi-input-multi-output LTI system}
+Now that we have considered SISO LTI system, a new direction can be considering MIMO systems. Again, to formulate our problem, we should consider our a-priori and a-posteriori informations.
+
+\subsubsection{A-priori information on the system}
+The system is a MIMO LTI system with $p$ input and $q$ outputs, described by means of a \textbf{matrix transfer function} $G(q{-1})$, where the elements of it are SISO transfer function.
+
+
+\[
+\begin{bmatrix}
+y_1 \\
+y_2 \\
+\vdots \\
+y_q
+\end{bmatrix}
+=
+\begin{bmatrix}
+G_{11}(q^{-1}) & G_{12}(q^{-1}) & \dots & G_{1p}(q^{-1}) \\
+G_{21}(q^{-1}) & G_{22}(q^{-1}) & \dots & G_{2p}(q^{-1}) \\
+\vdots         & \vdots         & \ddots & \vdots         \\
+G_{q1}(q^{-1}) & G_{q2}(q^{-1}) & \dots & G_{qp}(q^{-1})
+\end{bmatrix}
+\begin{bmatrix}
+u_1 \\
+u_2 \\
+\vdots \\
+u_p
+\end{bmatrix}
+\]
+
+\begin{factbox}[Discussion about the structure this matrix transfer function]
+In general, The denuminator of these transfer functions can be different, but considering that the transfer function can be obtained from steady-state representation of the system, $C*(sI-A)^{-1}B + D$, before the possible cancellations, The denuminator of all of these transfer functions would be the same. Having this consideration, less parameters should be identified. On the otherhand, in this case, the possible cancellations are hard to be recognized, due to the range obtained for each zero, PUI. In another possible case, some a-priori information regarding the degree of the transfer functions might be available. In that, we know that the order of a given output with respect to a given input is going to be of a specific value. 
+\end{factbox}
+
+The generic output $y_i$ is given by:
+\[
+y_i = G_{i1}(q^{-1}) + G_{i1}(q^{-1}) + \cdots + G_{i1}(q^{-1}) \:\:\forall\:\: i = 1,\,2,\,\cdots,\,q
+\]
+where each output $y_i$ only depends on the past samples of the output itself and the samples of the inputs $u_1,\,u_2,\,\cdots,\,u_p$. Identification of a \textbf{MIMO LTI} system with $q$ outputs is equivalent to the identification of $q$ \textbf{MISO LTI systems}.
+
+Therefore, we can focus on the problem of set-membership identification of MISO LTI systems.
+
+\subsubsection{Set-membership identification of LTI MISO with $p$ inputs}
+\textbf{A-priori information about the system:}
+\[
+y = G
+\begin{bmatrix}
+u_1 \\
+u_2 \\
+\vdots \\
+u_p
+\end{bmatrix}
+\]
+where
+\[
+G = [G_{1},\, G_{2},\,\dots,\, G_{p}]
+\]
+and in turn,
+\[
+G_i(q^{-1}) = \frac{\beta_{0i} +\beta_{1i}q^{-1} + \cdots + \beta_{pi}q^{-ni}}{1+\alpha_{1i}q^{-1} + \cdots + \alpha_{qi}q^{-ni}}
+\]
+here, $ni$, is the dynamical order of $G_i$.
+
+\textbf{A-priori information about the noise:}\\
+We assume an EIV structure for the noise affecting the data; that is,
+
+\begin{figure}[htbp]  % "h" for here, "t" for top, "b" for bottom, "p" for float page
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/MISO.jpg}
+    \caption{The scheme of the error entering the system in an EIV setting.}
+    \label{fig:MISO}
+\end{figure}
+
+A-posteriori information: N samples of the inputs and the output sequences experimentaly collected. \\
+Let's define the feasible parameter set:
+\[
+\mathcal{D}_a = \left\{ \theta \in \mathbb{R}^{\sum_{k=1}^{2n+1}} : 
+\begin{array}{l}
+y = G_1 u_1 + G_2 u_2 + \cdots + G_p u_p, \\
+y = \tilde{y} + \eta, \\
+u_1 = \tilde{u}_1 + \xi_1, \, \cdots, \, u_p = \tilde{u}_p + \xi_p, \\
+|\xi_1| \leq \Delta \xi_1, \, \cdots, \, |\xi_p| \leq \Delta \xi_p, \, |\eta| \leq \Delta \eta, \, \forall k \in \mathbb{N}
+\end{array}
+\right\}
+\]
+So,
+\[
+\mathcal{D}_a = \left\{ \theta \in \mathbb{R}^{\sum_{k=1}^{2n+1}} : 
+\begin{array}{l}
+y = \frac{\beta_0^1 + \beta_1^1 q^{-1} + \beta_2^1 q^{-2} + \cdots + \beta_n^1 q^{-n}}{1 + \alpha_1^1 q^{-1} + \alpha_2^1 q^{-2} + \cdots + \alpha_n^1 q^{-n}} u_1 + \cdots \\[2em]\]+ \frac{\beta_0^p + \beta_1^p q^{-1} + \beta_2^p q^{-2} + \cdots + \beta_n^p q^{-n}}{1 + \alpha_1^p q^{-1} + \alpha_2^p q^{-2} + \cdots + \alpha_n^p q^{-n}} u_p, \\
+y = \tilde{y} + \eta, \\
+u_1 = \tilde{u}_1 + \xi_1, \, \cdots, \, u_p = \tilde{u}_p + \xi_p, \\
+|\xi_1| \leq \Delta \xi_1, \, \cdots, \, |\xi_p| \leq \Delta \xi_p, \, |\eta| \leq \Delta \eta, \, \forall k \in \mathbb{N}
+\end{array}
+\right\}
+\]
+
+How to solve this problem? Mathematically, output is the superposition of the inputs, it might be time consuming, but we can identify single $G_i$'s. In real world problems, nothing is Linear, so different inputs affect the linearity of the system, so MISO problems cannot be written as SISO problems. Now, we should find a solution for our problem.
