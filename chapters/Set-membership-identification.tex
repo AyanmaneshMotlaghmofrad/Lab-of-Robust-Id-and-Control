@@ -1,4 +1,4 @@
-\chapter{Set-membership identification}    % For a new chapter (works in book and report class)
+\chapter{Set-membership identification (discrete-time)}    % For a new chapter (works in book and report class)
 
 Set-membership approach is an alternative to the classical, statistical identification approach. Least-Square method is one possible example of statistical estimation algorithms in the context of estimation.\\
 \section{Set-membership identification of single-input-single-output LTI systems}
@@ -943,7 +943,7 @@ We assume an EIV structure for the noise affecting the data; that is,
 A-posteriori information: N samples of the inputs and the output sequences experimentaly collected. \\
 Let's define the feasible parameter set:
 \[
-\mathcal{D}_a = \left\{ \theta \in \mathbb{R}^{\sum_{k=1}^{2n+1}} : 
+\mathcal{D}_\theta= \left\{ \theta \in \mathbb{R}^{\sum_{k=1}^{2n+1}} : 
 \begin{array}{l}
 y = G_1 u_1 + G_2 u_2 + \cdots + G_p u_p, \\
 y = \tilde{y} + \eta, \\
@@ -954,9 +954,9 @@ u_1 = \tilde{u}_1 + \xi_1, \, \cdots, \, u_p = \tilde{u}_p + \xi_p, \\
 \]
 So,
 \[
-\mathcal{D}_a = \left\{ \theta \in \mathbb{R}^{\sum_{k=1}^{2n+1}} : 
+\mathcal{D}_\theta = \left\{ \theta \in \mathbb{R}^{\sum_{k=1}^{2n+1}} : 
 \begin{array}{l}
-y = \frac{\beta_0^1 + \beta_1^1 q^{-1} + \beta_2^1 q^{-2} + \cdots + \beta_n^1 q^{-n}}{1 + \alpha_1^1 q^{-1} + \alpha_2^1 q^{-2} + \cdots + \alpha_n^1 q^{-n}} u_1 + \cdots \\[2em]\]+ \frac{\beta_0^p + \beta_1^p q^{-1} + \beta_2^p q^{-2} + \cdots + \beta_n^p q^{-n}}{1 + \alpha_1^p q^{-1} + \alpha_2^p q^{-2} + \cdots + \alpha_n^p q^{-n}} u_p, \\
+y = \frac{\beta_0^1 + \beta_1^1 q^{-1} + \beta_2^1 q^{-2} + \cdots + \beta_n^1 q^{-n}}{1 + \alpha_1^1 q^{-1} + \alpha_2^1 q^{-2} + \cdots + \alpha_n^1 q^{-n}} u_1 + \cdots \\[2ex]+ \frac{\beta_0^p + \beta_1^p q^{-1} + \beta_2^p q^{-2} + \cdots + \beta_n^p q^{-n}}{1 + \alpha_1^p q^{-1} + \alpha_2^p q^{-2} + \cdots + \alpha_n^p q^{-n}} u_p, \\
 y = \tilde{y} + \eta, \\
 u_1 = \tilde{u}_1 + \xi_1, \, \cdots, \, u_p = \tilde{u}_p + \xi_p, \\
 |\xi_1| \leq \Delta \xi_1, \, \cdots, \, |\xi_p| \leq \Delta \xi_p, \, |\eta| \leq \Delta \eta, \, \forall k \in \mathbb{N}
@@ -965,3 +965,695 @@ u_1 = \tilde{u}_1 + \xi_1, \, \cdots, \, u_p = \tilde{u}_p + \xi_p, \\
 \]
 
 How to solve this problem? Mathematically, output is the superposition of the inputs, it might be time consuming, but we can identify single $G_i$'s. In real world problems, nothing is Linear, so different inputs affect the linearity of the system, so MISO problems cannot be written as SISO problems. Now, we should find a solution for our problem.
+
+Consider $G_i(q^{-1}) = \frac{N_i(q^{-1})}{D_i(q^{-1})}$; then, the description of the set becomes as follows:
+
+\[
+\mathcal{D}_\theta = \left\{ \theta \in \mathbb{R}^{\sum_{k=1}^{2n+1}} : 
+\begin{array}{l}
+y = \frac{N_1(D_2.\cdots.D_p)u_1 +N_2(D_1.D_3\cdots.D_p)u_2 + \cdots + N_p(D_1.D_2.\cdots.D_{p-1})u_p}{D_1.D_2\cdots.D_p}\\
+y = \tilde{y} + \eta, 
+u_1 = \tilde{u}_1 + \xi_1, \, \cdots, \, u_p = \tilde{u}_p + \xi_p, \\
+|\xi_1| \leq \Delta \xi_1, \, \cdots, \, |\xi_p| \leq \Delta \xi_p, \, |\eta| \leq \Delta \eta, \, \forall k \in \mathbb{N}
+\end{array}
+\right\}
+\]
+\[\Updownarrow\]
+\[
+\mathcal{D}_\theta= \left\{ \theta \in \mathbb{R}^{\sum_{k=1}^{2n+1}} : 
+\begin{array}{l}
+(D_1.D_2\cdots.D_p)y = N_1(D_2.\cdots.D_p)u_1 +N_2(D_1.D_3\cdots.D_p)u_2 + \cdots +\\ N_p(D_1.D_2.\cdots.D_{p-1})u_p \:\:
+y = \tilde{y} + \eta, 
+u_1 = \tilde{u}_1 + \xi_1, \, \cdots, \, u_p = \tilde{u}_p + \xi_p, \\
+|\xi_1| \leq \Delta \xi_1, \, \cdots, \, |\xi_p| \leq \Delta \xi_p, \, |\eta| \leq \Delta \eta, \, \forall k \in \mathbb{N}
+\end{array}
+\right\}
+\]
+Now, let's focus on the left hand side of the eqation:
+\[
+(D_1.D_2\cdots.D_p)(\tilde{y}(k)-\eta(k))=\cdots
+\]
+Let's consider the case where $p = 2$:
+\[
+(1 + \alpha_1^1 q^{-1} + \alpha_2^1 q^{-2} + \cdots + \alpha_n^1 q^{-n}).(1 + \alpha_1^2 q^{-1} + \alpha_2^2 q^{-2} + \cdots + \alpha_n^2 q^{-n})\cdot(\tilde{y}(k)-\eta(k)) 
+\]
+Then, the explicit computation will lead to higher order polynomial constraints in the unknown variables, which are $\alpha_1^1\cdots\alpha_n^1$ and $\alpha_1^2\cdots\alpha_n^2$, $\eta(1),\,\eta(2),\, \cdots,\,\eta(k)$.
+
+By following this "standard" approach, we will lead to a polynomial optimization problem, POP, which are of the order $np$. If $p$ is relatively high, we are forced to pick a minimum value of the order of relaxation $\delta$ which is going to be large. We have an explosion of the computational complexity and/or memory overflow, because the size of the data structure involved in the SDP problem obtained by applying the convex relaxation techniques depends explonentially on the order of relaxation. 
+
+
+\begin{factbox}[Quote]
+Always consider that the transient of the system provides information about the poles and the zeros of the system.
+\end{factbox}
+
+In order to reduce computational compolexity, let's reformulate the problem by explicitly exploiting the fact that a MISO system is in fact a collection of $p$ SISO system. \\
+
+Let's call, $z_1,\,z_2,\,\cdots,\,z_p$ \textbf{the partial outputs} of the transfer functions $G_1,\,G_2,\,\cdots,\,G_p$:
+\[
+\begin{array}{c}
+z_1 = G_1u_1\\
+z_2 = G_2u_2\\
+\cdots\\
+z_p = G_pu_p
+\end{array}
+\]
+
+Let's define the FPS: 
+\[
+\mathcal{D}_\theta = \left\{ \theta \in \mathbb{R}^{\sum_{k=1}^{2n+1}} : 
+\begin{array}{l}
+\tilde{y} - \eta(k) = z_1(k) + z_2(k) + \cdots + z_p(k) \\
+z_1 = G_1u_1,\,
+z_2 = G_2u_2,\,
+\cdots,\,
+z_p = G_pu_p,\,
+u_1 = \tilde{u}_1 + \xi_1, \, \cdots, \, u_p = \tilde{u}_p + \xi_p, \\
+|\xi_1| \leq \Delta \xi_1, \, \cdots, \, |\xi_p| \leq \Delta \xi_p, \, |\eta| \leq \Delta \eta, \, \forall k \in \mathbb{N}
+\end{array}
+\right\}
+\]
+
+Since $\mathbb{D}_\theta$ depends on $\theta$ but also on many other unknowns, $z_1,\,z_2,\,\cdots,\,z_p$, $\xi_1(1),\,\xi_1(2),\,\cdots,\,\xi_1(N)$ and $\xi_p(1),\cdots,\,\xi_p(N)$, we need to look at the problem in an extended space, which is the space of all the unknown variables.\\
+In such a space, we define the Extended Feasible Parameter Set EFPS:
+
+
+\[
+\mathcal{D}_{\begin{array}{l}
+\theta,\,z_1,\,z_2,\,\cdots,\,z_p,\,\\\eta,\xi_1,\,\cdots,\,\xi_p
+\end{array}
+} = \left\{ 
+\begin{array}{l}
+(\theta,\,\eta,\,\xi_1,\,\cdots,\,z_1,\,z_2,\,\cdots,\,z_p) \in \mathbb{R}^{...} :\\
+\tilde{y} - \eta(k) = z_1(k) + z_2(k) + \cdots + z_p(k) \\
+z_1(k) = -\alpha_1^1z_1(k-1)-\alpha_2^1z_1(k-2) + \beta_0^1\tilde{u}(k) - \beta_0^1\xi(k) + \cdots \\
++ \beta_{n_1}^1\tilde{u}(k-n_1) - \beta_{n_1}^1\xi_1(k-n_1)\\,
+z_2 = \cdots,\,
+z_p = \cdots,\,
+u_1 = \tilde{u}_1 + \xi_1, \, \cdots, \, u_p = \tilde{u}_p + \xi_p, \\
+|\xi_1| \leq \Delta \xi_1, \, \cdots, \, |\xi_p| \leq \Delta \xi_p, \, |\eta| \leq \Delta \eta, \, \forall k \in \mathbb{N}
+\end{array}
+\right\}
+\]
+
+By rewriting the problem exploiting the partial outputs, each sample of the partial outputs, as additional optimization variables, we can rewrite the EFPS in such a way that its mathematical description only involves bilinaer constraints. \textbf{we can again pick as minimum order of relaxation $\delta = 1 $}.
+\newpage
+\section{Set-membership identification of non-linear systems (discrete-time systems)}
+
+Here, we consider non-linear input-output systems described in regression form:
+\[
+y(k) = f(\theta,\,r) = f(\theta,\,[y(k-1),\,y(k-2),\,\cdots,\,y(k-n),\,u(k),\,u(k-1),\,u(k-n)])
+\]
+Where $\theta$ is the vectors of the parameter models and $r$ is the regression.\\
+We restrict our attention to the ease where $f$ is a \textbf{multivariate polynomial} funciton of $r(k)$.
+
+\begin{example}[Example 1]
+\textbf{A-priori information on the system:}\\
+We know from our physical insight that the system is of dynamical order 1 and that $f$ is a multivariate polynomial of order 2.
+\[
+y(k) = f(\theta,r(k)) = f(\theta,[y(k-1),\,u(k),\,u(k-1))])
+\]
+In this case, we also have to discuss the degree of the polynomial, in addition to the dynamical order of the system.
+\[
+y(k) = \theta_1y(k-1) + \theta_2u(k) + \theta_3u(k-1) + \theta_4 y^2(k-1) + \theta_5 u^2(k) +\theta_6 y(k-1)u(k) + \theta_7 y(k-1)u(k-1) + \theta_8 y(k-1)u(k-1) + \theta_9 u(k)u(k-1)
+\]
+\end{example}
+
+\begin{example}[Example 2]
+\textbf{A-priori information on the system:}\\
+Dynamical order is 1. and the structure is as follow:
+\[
+y(k) = \theta_1y(k-1) + \theta_2u(k) + \theta_3u^2(k-1) + \theta_4 y(k-1)u(k)
+\]
+\end{example}
+
+\begin{example}[Example 3]
+\textbf{A-priori information on the system:}\\
+We know that the physical system has dynamical order 1 and that in this case we don't have any clear information about the mathematical structure of $f$.
+\end{example}
+
+\begin{QandAbox}[Result:]
+Assuming that $f$ enjoys some general continuity properties, we can approach the problem by exploiting the so called "stone-weinestress" theorem, which tells us that any non-linear fucntion enjoying continuity property can be approximated as well as we want over a compact set in the regressor space).\\
+
+The stone-weirestress theorem tells us that such a polynomial exists, but the theorem does not provide any information about the structure and the degree of the polynomial.
+\end{QandAbox}
+
+ \subsubsection{How to decide the structure and the degree of the polynomial:}
+ We starts from polynomial degree 2, and we try to solve the problem:\\
+ Is the obtained $\mathbb{D}_\theta$ is empty? This suggests that the POP problem is infeasible; in SparsePOP, this is suggested by \textbf{exit flag -1}.
+ \begin{enumerate}
+    \item No: Check whether sign($\underline{\theta_i}$) $=$ sign($\overline{\theta_i}$)    \begin{enumerate}
+                              \item If the signs are the same. the we are happy :)
+                              \item The signs are different:
+                                      \begin{itemize}
+                                           \item $|\underline{\theta_i}-\overline{\theta_i}|$ is small compared to the noise bound. $\Rightarrow$ $\theta_i = 0$
+                                          \item  $|\underline{\theta_i}-\overline{\theta_i}|$ is large and \textbf{the noise bound is big}$\Rightarrow$ \textbf{we have to chage the sensors}!!!
+                                          \begin{QandAbox}
+                                                The global solution depends on the bound of noise, or how large FPS is. If the noise bound is large, the resultant PUI is large too.
+                                          \end{QandAbox}
+                                           \item $|\underline{\theta_i}-\overline{\theta_i}|$ is large and \textbf{the sensor bound is small} $\Rightarrow$ \textbf{we have to increase the degree of the polynomial or dynamical order}!!!
+                                      \end{itemize}
+                              
+                         \end{enumerate}
+    \item Yes: we can conclude that the selected degree for the polynomial is too low. $\Rightarrow$ \textbf{we have to increase the degree of the polynomial or dynamical order}
+ \end{enumerate}
+ 
+ \textbf{Remark}: A similar trial-and-error approachcan also be appllied to the case - both for linear and non-linear system) when the dynamical order is not exactly known from our physical insight.\\
+ 
+
+\begin{factbox}
+Why don't we try to identify gradients of a non-linear system, or our polynomial, which at a certain point is going to be a linear function?
+
+1. We should repeat the identification procedure several times, depending on the degree of the polynomial. (This is not the main issue.)
+
+2. 
+\[
+\tilde{y} = y + \eta \Rightarrow \frac{d\tilde{y}}{dt} = \frac{dy}{dt} + \frac{d\eta}{dt}
+\]
+
+
+Since the noise is fast-changing, the bound of the derivative of the noise is going to be large.
+
+\textbf{Then, why don't we filter the data?}
+
+1. Because we cannot design a perfect filter.
+
+2. The filter changes the phase of the signal, which in real-time corresponds to a delay. Therefore, by filtering the data, we are no longer identifying the real system.
+\end{factbox}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/signal-and-noise.png}
+    \caption{The scheme of the error entering the system in an EIV setting.}
+    \label{fig:signal-and-noise}
+\end{figure}
+
+\newpage
+
+\textbf{Question to be pondered on: How to design a filter without the phase shift?}
+
+Now, how to circumvent the explosion of the computational complexity of the convex relaxation approach, when the polynomial involved in the POP have high degrees?\\
+Assuming that we want to estimate the parameters of the following non-linear MISO system, which is a \textbf{static system}:
+\[
+y(k) = \theta_1y(k-1) + \theta_2u_1(k)u_2(k) + \cdots + \theta_n u_1(k)u_2(k)\cdots u_p(k)
+\]
+where,
+\[
+\tilde{y}(k) = y(k)+\eta(k) \:\:\forall k
+\]
+\[
+\tilde{u}_i = u(k)+\xi(k)
+\]
+
+FPS in this case is defined as follows:
+\[
+\mathbb{D}_\theta = \{ \theta \in \mathbb{R}^p :\; \tilde{y}(k) - \eta(k) = \theta_1 (\tilde{u}_1(k) - \xi_1(k)) + \cdots + \theta_n \prod_{i=1}^p (\tilde{u}_i(k) - \xi_i(k)),
+\]
+\[
+|\eta(k)| \leq \Delta \eta, \; |\xi_i(k)| \leq \Delta \xi \text{ for all } i \}.
+\]
+
+In this case, the problem becomes a POP with constraints of degree$p+1$. Therefore, $\delta \geq \lceil \frac{p+1}{2} \rceil
+ $ is going to be large if $p$ is large, possibly being computationally untracktable.\\
+ 
+ In order to reduce the computational complexity of the POP, we can reformulate the problem by intorudcing new variables $z_j$ as follows:
+ 
+ 
+%this part needs to be corrected
+\[
+\begin{aligned}
+\underline{\theta_1} &= \min\limits_{\theta \in \mathbb{D}_{\eta,\xi,z}} \theta_1 
+\text{s.t.} \quad & \begin{aligned}
+    z_1 &= \xi_1 \xi_2 \\
+    z_2 &= z_1 \xi_3 \\
+    z_3 &= z_2 \xi_4 \\
+    &\vdots \\
+    z_{p-1} &= z_{p-2} \xi_p \\
+    \tilde{y}(k) - \eta &= \theta_1 u_1 - \theta_1 \xi_1 + \cdots + \theta_n z_2 z_3 \cdots z_{p-1}
+\end{aligned}
+\end{aligned}
+\]
+Here, the structure of the constrains that is defined with slack variables is such that the problem enjoys "the running intersection property", and we can use Sparse relaxation.
+Now, we get bilinear constraints, and then, \(\delta_{\text{min}} = 1\).
+
+\section{Set-membership Identification of Block-structured non-linear systems}
+Block-structured non-linear systems, or block-oriented non-linear systems, are non-linear dynamical systems which are obtained by connecting together a number of sub-systems such that each one of the subsystems can either be a dynamical LTI system or a static-nonlinear system.
+\subsection{Hammerstein Systems}
+
+The block diagram representation of this class of systems is as follows:
+
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}[block/.style={rectangle, draw, minimum height=2em, minimum width=3em, align=center}]
+
+    % Define blocks
+    \node[block] (nonlinear) {Nonlinear\\Block};
+    \node[block, right=2cm of nonlinear] (linear) {Linear\\Dynamic Block};
+
+    % Input and Output
+    \node[left=1.5cm of nonlinear] (input) {$u(t)$};
+    \node[right=1.5cm of linear] (output) {$y(t)$};
+
+    % Arrows with labels
+    \draw[->] (input) -- (nonlinear);
+    \draw[->] (nonlinear) -- node[above] {$x(t)$} (linear);
+    \draw[->] (linear) -- (output);
+
+\end{tikzpicture}
+\caption{Block diagram of a Hammerstein class of non-linear systems}
+\label{fig:hammerstein}
+\end{figure}
+
+Main features:
+\begin{itemize}
+    \item The internal signal $x(k)$ cannot be measured
+    \item THis structure is useful to describe physical systems which are essentially \textbf{LTI} (as far as the dynamics is concerned), but with a significant input non-linearity, e.g. presence of input saturation or deadzone non-linearity or any other non-linearity effect in the actuation part due to friction or other physical reasons.
+\end{itemize}
+
+Mathematical description of Hammerstein systems is as follows:
+\[
+\begin{cases}
+\text{LTI block:}\\G(q^{-1}) = -\alpha_1y(k-1) - \alpha_2y(k-2) -\cdots -\alpha_ny(k-n)+\beta_0x(k)+\beta_1x(k-1)+\cdots + \beta_nx(k-n)\\
+\text{Non-linear block:} \\x(k) = \mathbb{N}(u(k))
+\end{cases}
+\]
+
+Additional assumption about the state of $N(.)$:
+\[
+x(k) = N(u(k)) = \sum_{j = 1}^{m}\gamma_j\phi_j(u(k))) = \gamma_1\phi_1(u(k)) + \gamma_2\phi_2(u(k)) + \cdots + \gamma_m\phi_m(u(k))
+\]
+
+where, $\{\phi_j\},\,j = 1,\,2,\,\cdots,\,m$ is a set of \textbf{basis function} selected based on our physical insight.
+
+In the case we don0t have any specific physical insight on the form of $\mathbb{N}$, we can surely select $\{\phi_j\}$ to be the standard polynomial basis function.
+
+\[
+\begin{cases}
+\phi_1(u(k)) = u(k)\\
+\phi_2(u(k)) = u^2(k)\\
+\cdots\\
+\phi_m(u(k)) = u^m(k)
+\end{cases}
+\]
+Pay attention that no offset is considered for $x$, bacause when the input is switched off, it is non-sence to have output.\\
+
+\subsubsection{Output-Error setting for the Hammerstein system structure}
+A-priori information about the system structure:
+\begin{itemize}
+    \item The system has a Hammerstein structure.
+    \item $x$ is a linear combination of basis functions
+    \item $x$ cannot be measured
+    \item $y$ is an LTI system with the input $x$.\\
+    \[
+    y(k) = -\alpha_1y(k-1) - \alpha_2y(k-2) - \cdots - \alpha_n y(k-n) + \beta_0 x(k) + \beta_1 x(k-1) + \cdots + \beta_n x(k-n)
+    \]
+\end{itemize}
+
+A-priori information about noise structure:
+\begin{itemize}
+    \item We consider an output-error, for now.
+    \item Each sample of the noise is bounded by $\Delta \eta$
+\end{itemize}
+
+A-posteriori information: the input-output data samples.
+
+\subsubsection{Feasible Parameter Set $\mathbb{D}_\theta$}
+\[
+\begin{array}{l}
+\mathbb{D}_\theta = \{\theta \in \mathbb{R}^{2n + 1 + m}: 
+    y(k) = -\alpha_1y(k-1) - \alpha_2y(k-2) - \cdots - \alpha_n y(k-n) + \beta_0 x(k) + \beta_1 x(k-1) + \cdots \\+ \beta_n x(k-n), x(k) = \gamma_1\phi_1(u(k)) + \gamma_2\phi_2(u(k)) + \cdots + \gamma_m\phi_m(u(k))
+\tilde{y}(k) = y + \eta(k),\,|\eta(k)|\leq \Delta\eta
+\}
+\end{array}
+\]
+First approach:
+
+\[
+\begin{array}{l}
+\mathbb{D}_\theta = \{\theta \in \mathbb{R}^{2n + 1 + m}: 
+    \tilde{y}(k)-\eta(k) = -\alpha_1[\tilde{y}(k-1)-\eta(k-1)] - \cdots - \alpha_n [\tilde{y}(k-n)-\eta(k-n] +\\ \beta_0 [\gamma_1 u(k) + \gamma_2 u^2(k) + \cdots+ \gamma_m\phi_m(u(k))] +\cdots
+    + \beta_n [\gamma_1 u(k-n) + \gamma_2 u^2(k-n) + \cdots+ \gamma_m\phi_m(u(k-n))]\\,\,|\eta(k)|\leq \Delta\eta
+\}
+\end{array}
+\]
+
+Regarding the same reasoning that have been done before, we need to move from FPS to EFPS so that we include a larger space including the noise samples as its variables.
+\[
+\mathbb{D}_{\theta,\,\eta}
+\]
+
+\subsubsection{EIV setting for the Hammerstein system structure}
+
+Here, we consider that the exact value of the inputs are not known, and input samples are corrupted with the noise as well.\\
+In this case, if we consider $\{\phi_j\}$ other than polynomial basis, the dependancy of $\{\phi_j\}$ with respect to the error $\xi(k)$ is no more polynomial, \textbf{thereby we are not going to obtain POPs in order to compute PUIs.} As a consequence, we don't know how to approximate the global optimal solution of the optimization problem to be solved to compute the PUI. 
+
+\begin{factbox}
+For Hammerstein system structure, whenever the input measurements are corrupted by noise, we have to select the set of basis functions to be a set of polynomial function.
+\end{factbox}
+
+Considering a set of polynomial basis funcitons, the dependancy of $x$ and $\xi$ becomes polynomial, but the polynomials that are obtained are of a significantly large degrees in general.\\
+PUI's can be computed by selecting POPs, but $\delta$, or relaxation order, is going to be large. Therefore, we are in trouble from the computational point of view. The idea is to avoid replacing $x(k)$ inside the description of the LTI subsystem. We directly move to the following description of the EFPS.
+\[
+\begin{array}{l}
+\mathbb{D}_{\theta,\eta,\xi} = \{\theta \in \mathbb{R}^{2n + 1 + m},\,\eta \in \mathbb{R}^N,\,\xi \in \mathbb{R}^N: 
+    y(k) = -\alpha_1y(k-1) - \alpha_2y(k-2) - \cdots - \alpha_n y(k-n) + \\ \beta_0 x(k) + \beta_1 x(k-1) + \cdots + \beta_n x(k-n), x(k) = \gamma_1\phi_1(u(k)) + \gamma_2\phi_2(u(k)) + \cdots + \gamma_m\phi_m(u(k))\\
+\tilde{y}(k) = y + \eta(k),\,|\eta(k)|\leq \Delta\eta
+\}
+\end{array}
+\]
+
+In this second approach, we have again a set of described by bilinear constraints involving as optimization variable of the samples and also the unmeasureable inner signal $x(k)$.
+
+\[
+PUI_{\theta_i} = [\underline{\theta_i},\,\overline{\theta_i}]
+\]
+
+\[
+\begin{cases}
+\underline{\theta_i} = \min \limits_{\theta_i \in \mathbb{\mathbb{D}_{\theta,\,\xi,\,\eta}}} \theta_i\\
+\underline{\theta_i} = \min \limits_{\theta_i \in \mathbb{\mathbb{D}_{\theta,\,\xi,\,\eta}}} -\theta_i\\
+\end{cases}
+\]
+\begin{QandAbox}
+Polynomials cannot be used to model saturation, globally, but for a bounded range they can. 
+\end{QandAbox}
+
+\subsubsection{Identifiability of Hammerstei systems:}
+Let's consider the following two hammerstein system.
+\[
+\begin{cases}
+y1 = G_1(q^{-1})\mathbb{N}_1(u(k))\\
+y2 = G_2(q^{-1})\mathbb{N}_2(u(k))
+\end{cases}
+\]
+It can be easily proved that, $y_1 \equiv y_2\,\,\,\forall u$ provided that $\mathbb{N}_1 = \alpha \mathbb{N}_2$, $G_2(q^{-1}) = \alpha G_1(q^{-1}) \:\:\:\forall \alpha \in \mathbb{R}$.\\
+
+The Hammerstein system is not \textbf{itentifiable} because we have an infinit number of solutions to the identification problem, which are perfectly equivalent from the input-output point of view.\\
+
+\subsubsection{Results}
+\begin{itemize}
+    \item No matter what is the technique that we are going to use, we will not be able to estimate the exact parameter of the true Hammerstein system, even if we collect noiseless data and $N \to \infty$
+    \item since we have an infinite number of Hamerstein model able to provide exactly the same input-output behavior of the true one, our numberical procedure for the computation of the PUIs is going to fail. WHY???  \textbf{Because the FPS set is going to be structurally unbounded} For each value of $\alpha$ a feasible unceratinty set is going to be obtained, and when they are put next to one another, the result is going to be an unbounded FPS.
+\end{itemize}
+
+Therefore, we need to add additional constraints to make it bounded.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/unidentifiability_hammer.jpg}
+    \caption{A representation of the unidentifiability issue of Hammerstein nonlinear systems.}
+    \label{fig:signal-and-noise}
+\end{figure}
+
+Having said so, before attempting to solve the problem, identifiability of the system should be checked.
+
+\subsubsection{How to force uniquness of the solution in the Set-membership identification of Hammerstein systems?}
+\begin{enumerate}
+    \item Due to discussion we had in the previous lesson. We have to conclude that it's not possible to identify the true Hammerstein system under study even if the collected data are noiseless.
+    \item However, if we want to model the system under study in order to: 
+    \begin{itemize}
+        \item design a controller
+        \item predict the ouput behavior 
+    \end{itemize}
+    then, eahc one of Hammerstein system that provide same input-output behavior are perfectly fine.
+    \item Then, in order to force uniqueness of solution, we  have to add to the description of FPS and of the EFPS one more additional constraints such that, thanks to that condition, we force identifiability without changing the global input-output behavior mapping.
+\end{enumerate}
+
+\textbf{Possible additional constains to force uniquness are:}\\
+\begin{itemize}
+    \item dcgain('LTI part of the system')=1
+    \item setting one of the parameters of the non-linear part of the system to 1, e.g.$\gamma_1 = 1$
+\end{itemize}
+Now, it should be checked if the additional constraint is a polynomial constraint. For the second item abovementioned, it is trivial. It can easily be shown that also the first type of constraints are polynomial, or at any rate linear. For a second-order system, it is as follows:
+\[
+G(z) = \frac{\theta_3z + \theta_4}{z^2 + \theta_1z + \theta_1}
+\]
+Since we assume that our systems are BIBO stable, we know that we don't have any pole at 1. In the discrete-time case.
+\[
+\text{dcgain}(G(z)) = 1 \Rightarrow \theta_3 + \theta_4 - \theta_2 - \theta_1 = 0
+\]
+
+\textbf{Important remark:} The correct formulation of FPS or EFPS for the Hammerstein system must include either of the two additional constraints to lead to a unique solution.
+
+
+\subsection{Wiener System}
+Another basic structure in the class of block-structured nonlinear systems.
+
+
+
+
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}[block/.style={rectangle, draw, minimum height=2em, minimum width=3em, align=center}]
+
+    % Define blocks
+    \node[block] (linear) {Linear\\Dynamic Block};
+    \node[block, right=2cm of linear] (nonlinear) {Nonlinear\\Block};
+
+    % Input and Output
+    \node[left=1.5cm of linear] (input) {$u(t)$};
+    \node[right=1.5cm of nonlinear] (output) {$y(t)$};
+
+    % Arrows with labels
+    \draw[->] (input) -- (linear);
+    \draw[->] (linear) -- node[above] {$x(t)$} (nonlinear);
+    \draw[->] (nonlinear) -- (output);
+
+\end{tikzpicture}
+\caption{Block diagram of a Hammerstein class of non-linear systems}
+\label{fig:hammerstein}
+\end{figure}
+
+
+The same of the previous system, $N(.)$ is the output of a non-linear static map.
+
+Useful to describe non-linear dynamical systems wherer the dynamics is LTI, but we can have a significant non-linear output distortion due, for example, to some non-linear effect in the sensor.\\
+The set-membership identification of Weiner system is quite similar to that of Hammerstein sysetm - including the discussion that we had about identifiability and uniquness of the solution.
+
+ELABORATION OF THESE KIND OF SYSTEMS IS LEFT AS AN EXERCISE TO THE STUDENTS.
+\subsection{Lur'e System}
+In this class of non-linear system, the system has a closed-loop internal structure where the feedforward path is an LTI system and the nonlinearity is a static transfer function on the feedbakc of the system.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/Lure.jpg}
+    \caption{A block diagram representation of Lur'e class of the system.}
+    \label{fig:signal-and-noise}
+\end{figure}
+
+In this case, again, it is required to add another constraint in order to guarantee the uniqueness of the solution. In this case, however, it is a bit tricky to do so.
+
+ELABORATION OF THESE KIND OF SYSTEMS IS LEFT AS AN EXERCISE TO THE STUDENTS.
+
+\subsection{Generalization of block-structured models:}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{GBSC.png}
+    \caption{Block diagram representation of generalized block-structured configuration}
+\end{figure}
+
+$\mathcal{L}$ is a multivariable linear dynamic system described by a MIMO transfer matrix, mapping the noiseless inputs $\mathbf{u}_t \in \mathbb{R}^{n_u}$ and $\mathbf{w}_t \in \mathbb{R}^{n_w}$ into the noiseless outputs $\mathbf{z}_t \in \mathbb{R}^{n_z}$ and $\mathbf{y}_t \in \mathbb{R}^{n_y}$; Here, $w$ and $z$ are called internal inputs and internal outputs, respectively.
+    \[
+    \begin{bmatrix}
+    \mathbf{y}_t \\
+    \mathbf{z}_t
+    \end{bmatrix}
+    = \mathcal{L}
+    \begin{bmatrix}
+    \mathbf{u}_t \\
+    \mathbf{w}_t
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+    \mathcal{L}_{yu} & \mathcal{L}_{yw} \\
+    \mathcal{L}_{zu} & \mathcal{L}_{zw}
+    \end{bmatrix}
+    \begin{bmatrix}
+    \mathbf{u}_t \\
+    \mathbf{w}_t
+    \end{bmatrix}
+    \]
+The generic $(i,j)$-th entry of the matrix $\mathcal{L}$ is a SISO transfer function:
+    \[
+    \mathcal{L}(i,j) = G^{(i,j)}(q^{-1}) = \frac{\sum_{m=0}^{n_b^{(i,j)}} b_m^{(i,j)} q^{-m}}{1 + \sum_{k=1}^{n_a^{(i,j)}} a_k^{(i,j)} q^{-k}}
+    \]
+$q^{-1}$ is the backward time shift operator.
+
+The nonlinear block $\mathcal{N}$ is an array of nonlinear static functions:
+    \[
+w_t^{(i)} = f^{(i)}(\mathbf{z}_t), \quad i = 1, \dots, n_w
+    \]
+$f^{(i)}(\mathbf{z}_t)$ is defined as:
+    \[
+    f^{(i)}(\mathbf{z}_t) = \sum_{k=1}^{n_\phi^{(i)}} \phi_k^{(i)} \Phi_k^{(i)}(\mathbf{z}_t)
+    \]
+$\Phi_k^{(i)}: \mathbb{R}^{n_z} \to \mathbb{R}$ are known nonlinear multivariate polynomial basis functions.
+
+
+\subsection{Noise Structures (EIV Set-Up)}
+
+Input and output signals are affected by additive noise:
+    \[
+    \tilde{u}_t^ = u_t + \zeta_t, \quad \tilde{y}_t = y_t + \eta_t
+    \]
+  The noise signals are unknown but bounded:
+    \[
+    |\boldsymbol{\zeta}_t| \leq \Delta_{\zeta}, \quad |\boldsymbol{\eta}_t| \leq \Delta_{\eta} \quad \forall t
+    \]
+
+\subsection{Parameter Vector}
+
+The system parameter vector is defined as:
+\[
+\boldsymbol{\theta} = [\boldsymbol{\theta}_L, \boldsymbol{\theta}_N]^T \in \mathbb{R}^p
+\]
+
+ $\boldsymbol{\theta}_L \in \mathbb{R}^{p_l}$ and $\boldsymbol{\theta}_N \in \mathbb{R}^{p_n}$ correspond to the parameters of the linear and nonlinear subsystems respectively, where $p = p_l + p_n$.
+
+
+\subsection{Identifiability}
+
+The model equations for identifiability are given as:
+
+\[
+\begin{bmatrix}
+\mathbf{y}_t \\
+\mathbf{z}'_t
+\end{bmatrix}
+=
+\begin{bmatrix}
+\mathcal{L}_{yu} & \mathcal{L}_{yw}\mathbf{K}_w^{-1} \\
+\mathbf{K}_z\mathcal{L}_{zu} & \mathbf{K}_z\mathcal{L}_{zw}\mathbf{K}_w^{-1}
+\end{bmatrix}
+\begin{bmatrix}
+\mathbf{u}_t \\
+\mathbf{w}'_t
+\end{bmatrix}
+=
+\mathcal{L}'
+\begin{bmatrix}
+\mathbf{u}_t \\
+\mathbf{w}'_t
+\end{bmatrix}
+\]
+
+The nonlinear block is redefined as:
+\[
+\mathbf{w}'_t = \mathcal{N}'(\mathbf{z}'_t) = \mathbf{K}_w\mathbf{\Gamma}(\mathbf{z}'_t)
+\]
+
+\begin{itemize}
+    \item $\mathbf{K}_w$ and $\mathbf{K}_z$ are invertible constant matrices of suitable dimensions.
+    \item $\mathbf{\Gamma}$ is a stack of nonlinear polynomial static functions:
+    \[
+    g^{(i)}(\mathbf{z}_t) = \sum_{k=1}^{n_\phi^{(i)}} \psi_k^{(i)} \Phi_k^{(i)}(\mathbf{z}'_t)
+    \]
+    \item The coefficients $\psi_k^{(i)}$ satisfy:
+    \[
+    \mathbf{\Gamma}(\mathbf{z}'_t) = \mathcal{N}(\mathbf{z}_t)
+    \]
+\end{itemize}
+
+\subsection{Identifiability}
+
+The general block-structured nonlinear system is not identifiable since systems $(\mathcal{N}, \mathcal{L})$ and $(\mathcal{N}', \mathcal{L}')$ exhibit the same mapping between $\mathbf{u}$ and $\mathbf{y}$. To impose identifiability:
+
+\[
+\sum_{m=0}^{n_b^{(i,j)}} b_m^{(i,j)} = 1 + \sum_{k=1}^{n_a^{(i,j)}} a_k^{(i,j)}
+\]
+
+The steady-state gains of all transfer functions in submatrices $\mathcal{L}_{yw}$ and $\mathcal{L}_{zu}$ are set to one.
+
+\subsection{Extended Feasible Parameter Set (EFPS)}
+
+The Extended Feasible Parameter Set (EFPS) $\mathcal{D}$ is defined as follows:
+
+\[
+\mathcal{D} = \left\{
+(\boldsymbol{\theta}, \mathbf{v}^{(i,j)}, \boldsymbol{\eta}, \mathbf{w}, \mathbf{z}) \in \mathbb{R}^p + (\mathbb{R}^r + \mathbb{R}^s)^N :
+\right.
+\]
+\[
+\mathbf{v}_t^{(i,j)} = \sum_{m=0}^{n_b^{(i,j)}} b_m^{(i,j)} \mathbf{r}_{t-m}^{(j)} - \sum_{k=1}^{n_a^{(i,j)}} a_k^{(i,j)} \mathbf{v}_{t-k}^{(i,j)},
+\]
+\[
+\mathbf{s}_t^{(i)} = \sum_{k=1}^{n_r} \mathbf{v}_t^{(i,k)}, \quad \forall i = 1, \dots, n_s,
+\]
+\[
+\mathbf{w}_t^{(l)} = \sum_{k=1}^{n_\phi^{(l)}} \phi_k^{(l)} \Phi_k^{(l)}(\mathbf{z}_t),
+\]
+\[
+\mathbf{y}_t^\ast = \mathbf{y}_t + \boldsymbol{\eta}_t, \quad \|\boldsymbol{\eta}\| \leq \Delta_\eta,
+\]
+\[
+\mathbf{u}_t^\ast = \mathbf{u}_t + \boldsymbol{\zeta}_t, \quad \|\boldsymbol{\zeta}\| \leq \Delta_\zeta,
+\]
+\[
+t = 1, \dots, N, \quad i = 1, \dots, n_s, \quad j = 1, \dots, n_r,
+\]
+\[
+l = 1, \dots, n_w, \quad o = 1, \dots, n_y, \quad i = 1, \dots, n_u
+\}
+\]
+
+Here:
+
+\begin{itemize}
+    \item $\mathbf{v}_t^{(i,j)}$ represents the partial outputs, defined explicitly as:
+    \[
+    \mathbf{v}_t^{(i,j)} = G^{(i,j)}(q^{-1}) \mathbf{r}_t^{(j)} = \sum_{m=0}^{n_b^{(i,j)}} b_m^{(i,j)} \mathbf{r}_{t-m}^{(j)} - \sum_{k=1}^{n_a^{(i,j)}} a_k^{(i,j)} \mathbf{v}_{t-k}^{(i,j)}.
+    \]
+    \item $\mathbf{r}_t = [\mathbf{u}_t, \mathbf{w}_t]^T \in \mathbb{R}^{n_r}$ is a vector of system inputs.
+    \item $\mathbf{s}_t = [\mathbf{y}_t, \mathbf{z}_t]^T \in \mathbb{R}^{n_s}$ is a vector of system states.
+    \item The term $\mathbf{w}_t^{(l)}$ involves the nonlinear polynomial functions $\Phi_k^{(l)}$.
+\end{itemize}
+The EFPS represents the set of all possible system configurations that satisfy the constraints imposed by the model equations, noise bounds, and system parameters.
+
+
+\subsection{Parameter Uncertainty Intervals (PUI)}
+
+The EFPS $\mathcal{D}$ allows for computation of the parameter uncertainty intervals:
+\[
+\text{PUI}_k = [\theta_k^\text{min}, \theta_k^\text{max}]
+\]
+
+These are determined by solving global optimization problems:
+\[
+\theta_k^\text{min} = \min_{\boldsymbol{\theta} \in \mathcal{D}} \theta_k, \quad \theta_k^\text{max} = \max_{\boldsymbol{\theta} \in \mathcal{D}} \theta_k
+\]
+
+\subsection{Bounds Computation as Polynomial Optimization}
+
+The bounds are computed by solving the following optimization problem:
+\[
+\begin{aligned}
+    \min_{\boldsymbol{\theta}, \mathbf{v}^{(i,j)}, \boldsymbol{\eta}, \mathbf{w}, \mathbf{z}} \quad & \theta_k \quad \text{(or maximize $\theta_k$ for upper bound)} \\
+    \text{s.t.} \quad & \mathbf{v}_t^{(i,j)} = \sum_{m=0}^{n_b^{(i,j)}} b_m^{(i,j)} \mathbf{r}_{t-m}^{(j)} - \sum_{k=1}^{n_a^{(i,j)}} a_k^{(i,j)} \mathbf{v}_{t-k}^{(i,j)}, \\
+    & \mathbf{s}_t^{(i)} = \sum_{k=1}^{n_r} \mathbf{v}_t^{(i,k)}, \quad \forall i = 1, \dots, n_s, \\
+    & \mathbf{w}_t^{(l)} = \sum_{k=1}^{n_\phi^{(l)}} \phi_k^{(l)} \Phi_k^{(l)}(\mathbf{z}_t), \quad \forall l = 1, \dots, n_w, \\
+    & \mathbf{y}_t^\ast = \mathbf{y}_t + \boldsymbol{\eta}_t, \quad \|\boldsymbol{\eta}\| \leq \Delta_\eta, \\
+    & \mathbf{u}_t^\ast = \mathbf{u}_t + \boldsymbol{\zeta}_t, \quad \|\boldsymbol{\zeta}\| \leq \Delta_\zeta, \\
+    & t = 1, \dots, N, \quad i = 1, \dots, n_s, \quad j = 1, \dots, n_r, \\
+    & l = 1, \dots, n_w, \quad o = 1, \dots, n_y, \quad i = 1, \dots, n_u.
+\end{aligned}
+\]
+
+
+\section*{Final Remarks}
+
+\begin{itemize}
+    \item Global optimal solutions can be computed using Lasserre-relaxation methods.
+    \item Specific cases like Hammerstein, Wiener, and Lur’e systems are included within the GBSC framework.
+    \item SISO and MIMO LTI systems are also special cases.
+    \item General polynomial nonlinear systems in regressor form can be analyzed under this framework.
+\end{itemize}
+
+\section*{Further Reading}
+
+\begin{itemize}
+    \item V. Cerone et al., *A unified framework for the identification of a general class of multivariable nonlinear block-structured systems*, International Journal of Robust and Nonlinear Control, 2021.
+    \item V. Cerone et al., *One-shot set-membership identification of generalized Hammerstein-Wiener systems*, Automatica, 2020.
+    \item V. Cerone et al., *Bounding the parameters of block-structured nonlinear feedback systems*, International Journal of Robust and Nonlinear Control, 2013.
+\end{itemize}

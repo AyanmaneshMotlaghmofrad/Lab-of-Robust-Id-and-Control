@@ -1,0 +1,21 @@
+\chapter{Laboratory 04: solution}
+In this problem we assume that the plant to be identified is exactly described as a discrete-time
+LTI models described by the following transfer function:
+\[
+G_p(q^{-1}) = \frac{N(q^{-1})}{D(q^{-1})} = \frac{\theta_3 + \theta_4 q^{-1} + \theta_5 q^{-2}}{1 + \theta_1 q^{-1} + \theta_2 q^{-2}} 
+\]
+\subsubsection{Data acquisition considerations:}
+\begin{itemize}
+    \item \textbf{Sampling rate: }As a rule of thumb, we should have at least 20 to 50 data from the transient of the system. Therefore, first, we apply a step to the system and we see the setteling time of the system, if this value is devided by 50 we obtain the period of the sampling. For this lab, setteling time is around 0.5, so the sampling rate should be at least 100. It was recommended to perform the lab with the sample rate around 250. \\
+    It was also recommended to acquisit data with higher sampling rates such as 500 and 1000. It was suggested that we are going to face an issue regarding theoretical aspects of control thoery, yet to be explained. (I guess that maybe it makes the identification more dependent on the noise since we are introducing more noise to the data).
+    \item \textbf{Bounds on the noise:} In order to have an idea about the bound of the noise, it was recommended to acquisit data with zero input, or at any rate without any input, and then, have an idea about the input and output noise bounds.
+    \item \textbf{Input signal} It was recommended to use \textbf{uniformly distributed random signal}, but care should be taken regarding the amplitude of the noise. \begin{itemize}
+                \item \textbf{too low amplitude} $\Rightarrow$ \textbf{bad SNR}, Signal to Noise Ratio.
+                \item \textbf{too high amplitude} $\Rightarrow$ \textbf{Risk of saturation}, having non-linearity which is not assumed.\\
+                \end{itemize}
+                
+                Considering the inputs with \textbf{DC gains}, so that you excite better the low-frequency range of frequency spectrum. Not too much! since a large DC and large amplitude may lead to saturation of the output. 
+     
+    \item In the lab assignment, it is required to stimulate the system with a square wave input, and acquire samples for identification purposes.
+\end{itemize}
+
