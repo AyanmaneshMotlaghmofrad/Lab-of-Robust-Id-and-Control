@@ -1234,7 +1234,7 @@ Mathematical description of Hammerstein systems is as follows:
 \[
 \begin{cases}
 \text{LTI block:}\\G(q^{-1}) = -\alpha_1y(k-1) - \alpha_2y(k-2) -\cdots -\alpha_ny(k-n)+\beta_0x(k)+\beta_1x(k-1)+\cdots + \beta_nx(k-n)\\
-\text{Non-linear block:} \\x(k) = \mathbb{N}(u(k))
+\text{Non-linear block:} \\x(k) = \mathcal{N}(u(k))
 \end{cases}
 \]
 
@@ -1245,7 +1245,7 @@ x(k) = N(u(k)) = \sum_{j = 1}^{m}\gamma_j\phi_j(u(k))) = \gamma_1\phi_1(u(k)) + 
 
 where, $\{\phi_j\},\,j = 1,\,2,\,\cdots,\,m$ is a set of \textbf{basis function} selected based on our physical insight.
 
-In the case we don0t have any specific physical insight on the form of $\mathbb{N}$, we can surely select $\{\phi_j\}$ to be the standard polynomial basis function.
+In the case we don0t have any specific physical insight on the form of $\mathcal{N}$, we can surely select $\{\phi_j\}$ to be the standard polynomial basis function.
 
 \[
 \begin{cases}
@@ -1342,11 +1342,11 @@ Polynomials cannot be used to model saturation, globally, but for a bounded rang
 Let's consider the following two hammerstein system.
 \[
 \begin{cases}
-y1 = G_1(q^{-1})\mathbb{N}_1(u(k))\\
-y2 = G_2(q^{-1})\mathbb{N}_2(u(k))
+y1 = G_1(q^{-1})\mathcal{N}_1(u(k))\\
+y2 = G_2(q^{-1})\mathcal{N}_2(u(k))
 \end{cases}
 \]
-It can be easily proved that, $y_1 \equiv y_2\,\,\,\forall u$ provided that $\mathbb{N}_1 = \alpha \mathbb{N}_2$, $G_2(q^{-1}) = \alpha G_1(q^{-1}) \:\:\:\forall \alpha \in \mathbb{R}$.\\
+It can be easily proved that, $y_1 \equiv y_2\,\,\,\forall u$ provided that $\mathcal{N}_1 = \alpha \mathcal{N}_2$, $G_2(q^{-1}) = \alpha G_1(q^{-1}) \:\:\:\forall \alpha \in \mathbb{R}$.\\
 
 The Hammerstein system is not \textbf{itentifiable} because we have an infinit number of solutions to the identification problem, which are perfectly equivalent from the input-output point of view.\\
 
