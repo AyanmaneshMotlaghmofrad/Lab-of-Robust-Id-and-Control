@@ -40,26 +40,26 @@ M =  \frac{G(q^{-1}) K(\rho,q^{-1})}{1+G(q^{-1}) K(\rho,q^{-1})}
 
 This problem is called, \textbf{\textit{Model matching problem}}.
 
-\subsubsection{Result 1}:
+\subsubsection{Result 1}
 If $G(q^{-1})$ is known, the model-based matching problem has a trivial solution, which provides what we called the \textit{"ideal controller $K^{*}$"}:
 \[
 M + MGK = GK \Rightarrow K^{*} = \frac{M}{(1-M)G}
 \]
 
-\subsubsection{Result 2}:
+\subsubsection{Result 2}
 It can easily be shown that the ideal controller $K^{*}$
 \begin{itemize}
     \item can be physically unrealisable, because the order of the denuminator of the $K^{*}$ may be large than that of the numerator. This, however, can be overcomed by suitablly adding high frequency poles.
     \item $K^{*}$ is not guaranteed to provide internal stability of the feedback control system, because $K^{*}$ is, in general, performing unstable zero-pole cancellation in $G$, which means cancelling of poles with a norm larger than 1.
 \end{itemize}
 
-\subsubsection{Result 3}:
+\subsubsection{Result 3}
 It is possible to prove that $K^{*}$ is ensuring internal stability if and only if the transfer function $M(q^{-1})$ includes all the unstable zeros of $G(q^{-1})$. \\
 
-\subsubsection{Result 4}:
+\subsubsection{Result 4}
 Result 3 allow us to fix the second problem, to save internal stability, but what what we pay is that the modified $M(q^{-1})$ that will include het "unstable" zeros is no more a descriptoin of the describe behavior.\\
 
-\subsubsection{Result 5}:
+\subsubsection{Result 5}
 We are assuming that $G$ is not known. Then, we can collect input-output data by performing an experiment on the plant, and we calculate the error transfer function $E$. Ideally, $E$ is zero.
 
 \begin{factbox}
@@ -67,17 +67,17 @@ Pay attention that, here, the system $G$ must be BIBO stable so that we can perf
 \end{factbox}
 
 \[
-\mathcal{E} = M - \frac{G(q^{-1}) K(\rho,q^{-1})}{1+G(q^{-1}) K(\rho,q^{-1})}
+E = M - \frac{G(q^{-1}) K(\rho,q^{-1})}{1+G(q^{-1}) K(\rho,q^{-1})}
 \]
-Here, $G$ is unknown, and $K$ is to be designed. Now, let's apply to both terms teh signal $r(t)$.
+Here, $G$ is unknown, and $K$ is to be designed. This equation is in terms of systems and not the system output. Now, let's apply to both terms teh signal $r(t)$. By doing so, we are changing our problem to system output rather than the system. However, we have to assume that this equation can be solve for all the referecen signal.
 \[
 Mr =  \frac{G(q^{-1}) K(\rho,q^{-1})}{1+G(q^{-1}) K(\rho,q^{-1})}r \:\:\: \forall r(t)
 \]
-so,
+Here, the left side of the equation is the output of $M$ when the input $r$ is applied, and the right side of the equation is the output of the feedback control system when the same input is applied. Therefore,
 \[
 \mathcal{E}(t) = M.r - \frac{G(q^{-1}) K(\rho,q^{-1})}{1+G(q^{-1}) K(\rho,q^{-1})}r \:\:\: \forall r(t)
 \]
-where $\mathcal{E}(t)$ is the output error signal. Ideally, it should be zero for all $t$ and $r(t)$.
+where $\mathcal{E}(t)$ is the output error signal.Ideally, it should be zero for all $t$ and $r(t)$, or at any rate, it is our task.
 
 \[
 \begin{array}{c}
@@ -90,6 +90,10 @@ Mr - MKGr = KGr \\
 KGr = \frac{M}{1-M}
 \end{array}
 \]
+\begin{factbox}
+Pay attention that $E$ is the system error, while $\mathcal{E}(t)$ is the output error signal.
+\end{factbox}
+
 It can be seen that this equation still depends on $G$, which is not known. By replacing $Gr$ with the signal $y$.\\
 
 Now, by simulation, considering the right-hand side of the equation, we can obtain a signal which is defined in the following manner:
@@ -105,7 +109,11 @@ Finally, since through the experiment, we can obtain $\tilde{y}(k)$, so by repla
 \[
 s(k) = K(\rho,q^{-1})[\tilde{y}(k) - \eta(k)]
 \]
-
+ \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{dddc-prof-sketch.png}
+    \caption{A graphical representation of the reasoning behind this manipulation.}
+ \end{figure}
 The problem of designing $K$ is infact an input-error System-identification problem under the assumption that:
 \[
 |\eta(k)|<\Delta\eta \:\:\: \forall k
@@ -146,9 +154,10 @@ and EFCPS becomes
 
 \textbf{Important Remark}: If $\mathcal{D}_{\rho,\,\eta}$ is empty, there is no controller in the considered class $C$ which solves the controller design problem.
 
-\subsubsection{Result 6}:
-$\mathcal{D}_{\rho,\eta}$ is empty if and only if at least one of the POPs to e solved for computing the \textbf{\textit{controller parameter uncertainty intervals (CPI)}} is infeasible, which means negative exit flag in sparsepop command.
 
+\subsubsection{Result 6}
+$\mathcal{D}_{\rho,\eta}$ is empty if and only if at least one of the POPs to be solved for computing the \textbf{\textit{controller parameter uncertainty intervals (CPI)}} is infeasible, which means negative exit flag in sparsepop command.
+ 
 
 \subsubsection{Summerizing the controller design procedure:}
 \begin{enumerate}
@@ -175,10 +184,10 @@ $\mathcal{D}_{\rho,\eta}$ is empty if and only if at least one of the POPs to e 
     \[
     K(\rho,q^{-1}) = \frac{\rho_{n+1}^c + \rho_{n+1}^cq^{-2} + \cdots + \rho_{2n+1}^cq^{-n}}{1+ \rho_1^cq^{-1} + \rho_2^cq^{-2} \cdots + \rho_{n}q^{-n}}
     \]
-    where $rho_i^c$ is the Chebyshev center of the parameter $i$.
+    where $\rho_i^c$ is the Chebyshev center of the parameter $i$.
 \end{enumerate}
 
-\subsubsection{Result 7}:
+\subsubsection{Result 7}
 If $K^{*} \in C$, then $K^{*} \in \mathcal{D}_\rho$
  \begin{figure}[H]
     \centering
@@ -188,7 +197,7 @@ If $K^{*} \in C$, then $K^{*} \in \mathcal{D}_\rho$
  \end{figure}
 
 
-\subsubsection{Result 8}:
+\subsubsection{Result 8}
 Since we don't know $K^{*}$, if we assume that $K^{*} \in \mathcal{D}_\rho$, the worst-case estimation of $K^{*}$ is going to be for a K on the boundary of $\mathcal{D}$ with the largest distance, so we choose $K$ to be $K(\rho^c,q^{-1})$, where
 \[
 \rho^c = \arg \min_{\rho \in \mathbb{R}^{\text{length of $\rho$}}} \max_{\rho' \in \mathcal{D}_\rho} \|\rho - \rho'\|_\infty
@@ -196,7 +205,8 @@ Since we don't know $K^{*}$, if we assume that $K^{*} \in \mathcal{D}_\rho$, the
 
 considering $l_\infty$ for our cost function, $\rho^c$ becomes the Chebyshev center of the FCPS.
 
-\subsubsection{Result 9}:
+
+\subsubsection{Result 9}
 It possible that the Chebyshev center in the $l_\infty$ norm is given by:
 \[
 \rho^c = \frac{\underline{\rho}+\overline{\rho}}{2}
@@ -204,6 +214,186 @@ It possible that the Chebyshev center in the $l_\infty$ norm is given by:
 Since in $l_\infty$ we are considering a box around our $\mathcal{D}$ so the center of this box becomes the mean of the CPUIs.
 
 Now, the procedure for the controller class is as follows. First, a first order model is chosen, then if it weren't feasible, the degree is increased, until we find a feasible solution.
+
+\subsection{Considerations regarding the reference signal}
+In the previous discussion, we were able to eliminate the transfer function $G(q^{-1})$ from the equation by applying the reference signal to both sides of the equation 
+\[
+\begin{array}{c}
+\begin{cases}
+E(\rho,q^{-1}) = 0\\
+E(\rho,q^{-1}) = M(q^{-1}) - \frac{K(\rho,q^{-1})G(q^{-1})}{1 + K(\rho,q^{-1})G(q^{-1})}
+\end{cases}
+\Rightarrow M(q^{-1}) - \frac{K(\rho,q^{-1})G(q^{-1})}{1 + K(\rho,q^{-1})G(q^{-1})} = 0\\
+ \Updownarrow\\
+ \mathcal{E} = 0 \Leftrightarrow s(t) = K(\rho,q^{-1})\left[\tilde{y}(t)- \eta(t)\right] \:\:\:\: \forall r(t)
+\end{array}
+\]
+And the last one should be true for all the reference signal $r$. It means that in order to try, practically, to force that equation
+\[
+ s(t) = K(\rho,q^{-1})\left[\tilde{y}(t)- \eta(t)\right] 
+\]
+is satisfied for all $r(t)$, we have to select $r(t)$ to be used in the experiment as a white noise, because \textbf{by definition as white signal is a signal having a flat spectrum at all frequencies,} which means such a signal applied to the plant is able to excite the system dynamics as well as any other signal.
+
+\begin{factbox}[Dicussion regarding the reference signal]
+If we apply a step reference signal, we are not exciting all the possible dynamics of the system, because of the spectrum of the step signal. The reason this is true is that the essential content of a step signal is the dc-gain of the signal, frequency equal to 0.\\
+ \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{step-spectrum.png}
+    \caption{The frequency spectrum of step signal function}
+ \end{figure}
+ 
+ On the other hand, using a sinusoidal signal with a specific frequency stimulates the system exactly at that frequency; again you can consider the frequency response of the sinusoidal signal.\\
+ 
+ \end{factbox}
+ \begin{factbox}
+ \textbf{In the procedure of designing a data-driven controller, if we pick the step reference signal, we can only say that the controller we are willing to design will be able to match the behavior of the reference system when the reference system is a step signal}. In this case, if we apply a different reference signal - for example, a sinusoidal reference signal with a high frequency - it is not guaranteed that the control system is going to match that of the reference model when that signal is applied to it.
+ 
+In order to be able to cover all situations, in practice, we have to perform a large number of experiment considering all the signals that are of interest in our application. Afterwards, we have to collect all the data that we have obtained by different experiements. Finally, we should perform the identification using all the collected data.\\
+
+Alternatively, if we don't know which signal is going to be used, we can use a white-noise signal to excite the plant. 
+
+\end{factbox}
+
+
+\subsection{Standard approach for selecting/designing the reference model $M_r(q^{-1})$(Not included in the exam)}
+The reference model $M_r(q^{-1})$ is typically selected in order to impose a certain desired behavior to the complementary sensitivity function $T(q^{-1})$ of the feedback control system to be designed.
+
+\begin{example}[Examples]
+We can select $M_r(s)$ (continuous-time reference model) by looking at the desired step response of the feedback control system. \\
+
+\textbf{Example 01}: to obtain a response that has the following shape,
+\[
+M_r(s) = \frac{1}{1+ \frac{s}{p}}, \:\:\: p > 0 
+\]
+which has the behavior of a stable first-order system that has a dcgain equal to 1, in order to enforce tracking the reference signal at the steady-state condition. By tuning $p$, the speed of the response can be changed.\\
+
+\textbf{Example 02}:
+A reference model that has the behavior of a second-order system.
+\[
+M_r(s) = \frac{\omega_n^2}{s^2 + 2 \zeta \omega_n s + \omega^2}
+\]
+\end{example}
+
+\textbf{The limitation of this approach} is that by only selecting $M_r(s)$ in view of the design response of $T$, we can only impose the behavior of the feedback control system from the point of view of the reference tracking performance to one or more reference signals, but the behavior of the feedback control system as well as the attenuation of distrubrances and/or sensor noise is concerned, it is almost out of our control. \\
+
+In fact, once we have selected $M_r(s)$ as in the previous two examples, we can obtain $M_r(q^{-1})$ by discretizing $M_r(s)$. However, the response to the disturbance $d_p$ at the output, as an example, is related to the sensitivity function of the feedback control system, which is 
+\[
+S(q^{-1}) = 1 - T(q^{-1})
+\]
+In case our desired data-driven controller is going to match exactly $M_r(q^{-1})$\\
+\[
+S(q^{-1}) = 1 - T(q^{-1}) = 1 - M_r(q^{-1})
+\]
+Nonetheless, it is not guaranteed at all that the resultant $S(q^{-1})$ is going to enjoy good attenuation property with respect to the output disturbance $d_p$ acting on the output.\\
+
+\subsubsection{Idea (proposed approach)}
+The idea is to design $M_r(q^{-1})$ by solving a \textbf{\textbf{"ficticious control design problem"}} accounting for all the quantitative performance requirements involved in the considered control problem. Here, we are refering to the following problem:\\
+
+Assuming that our real task in a real control problem is, given a plant $G$, we want to desing a controller $K$ such that the controller have the following classes of quantitative performance requirements that accounts for:
+\begin{itemize}
+    \item steady-state response to polynomial reference inputs $r$
+    \item steady-state response to polynomial distrubance $d_p$ 
+    \item steady-state response to measurement disturbances $d_s$
+    \item transient step response requirements on overshoot $\hat{s}$
+    \item rise time $t_r$ and settling time $t_s$
+\end{itemize}
+
+ \subsubsection{Reference model desing in DDDC method}
+ The problem addressed in the paper is to design the reference model $M$ such that the DDDC system designed on the basis of such a model meets classes of quantitative performance specifications listed above.
+ 
+ \begin{figure}[H]
+    \centering \includegraphics[width=0.65\textwidth]{fic-control-problem.png}
+    \caption{The scheme of the ficticious control problem to be considered.}
+ \end{figure}
+ 
+ \subsubsection{The proposed approach}
+\textbf{ I) }The main idea is that the reference model $M_r(q^{-1})$ that we are going to select will play the role of the ideal complementary sensitivity function $T(q^{-1})$ of the feedback control system. Therefore, by selecting $M_r(q^{-1})$, we can impose the reference tracking performance, but also the performance related to the attenuation of the sensor noise $d_s$.\\
+ 
+ \textbf{II)} At the same time,  the performance related to the attenuation of the output disturbance $d_p$ depends on the shape of \\
+ \[
+ S(q^{-1}) = 1 - T(q^{-1}) = 1 - M_r(q^{-1})
+ \]
+ I and II are true since, in a feedback control system that we are considering\\
+ \[
+ y = T.r + Sd_p + Td_s
+ \]
+ If the plant $G$ is known, we can adopt any control design technique in order to design the controller. However, here, we don't know $G$. \\
+  
+ At this step, we don't want to obtain the controller, and, by the way, it is not possible at this stage. Now, we want to design the function $T$ and $S$ such that they satisfy the specified requirements.\\
+
+\subsubsection{How to select the ficticious plant}
+\begin{enumerate}
+    \item If the true $G$\textbf{ does not have} \textit{non-minimum-phase zero} - zeros our of the unit circle:\\
+    In this case, we consider a $G_{\text{ficticious}} = 1$.\\
+    \begin{QandAbox}
+    Because our aim at this stage is just to find what is the reference model to be obtained such that if the reference model is equal $T$, and in turn the sensitivity function $S = 1 - T$, all the requirements are satisfied. Since the behavior of the closed loop system only depends on $T$ and $S$.
+     \[
+ y = T.r + Sd_p + Td_s
+ \]
+  Then, we obtain a ficticious controller $K_{\text{ficticious}}$ that is able to control the ficticious plant satisfying the requirements. \textbf{As a result}
+  \[
+  T = \frac{K_{\text{ficticious}}G_{\text{ficticious}}}{1 + K_{\text{ficticious}}G_{\text{ficticious}}}
+  \]
+  Then, we use this $T$ for our direct-data-driven-controller problem so as to obtain the controller for the actual plant. \textbf{Since the resultant controller for the actual plant is going to result in a complementary sensitivity function $T = M_r$}, we are sure that the requirements are going to be satisfied.
+    \end{QandAbox}
+    \begin{example}[$H_\infty$ technique for designing the reference model (solving the ficticious control problem)]
+    Condiring $H_\infty $ technique for designing the controller
+     \begin{figure}[H]
+    \centering \includegraphics[width=0.6\textwidth]{fic-control-problem.png}
+    \caption{The block diagram of the generalized plant used for our ficticious control problem in the $H_\infty$ context}
+ \end{figure}
+ As a result,
+ \[
+ M_r(s) = \tilde{T}(s) = \frac{\tilde{K}\tilde{G}}{1 + \tilde{K}\tilde{G}}
+ \]
+ where
+ \[
+ \tilde{K} = \arg \min\limits_{\tilde{K}(s) \in \tilde{K}(s)^{stab}} \|T_{wz}(s)\|_\infty
+ \]
+ and 
+ \[
+ T_{wz} = 
+ \begin{bmatrix}
+ W_T\tilde{T}\\
+ W_S\tilde{S}
+ \end{bmatrix}
+ \]
+    \end{example}
+    \item The true $G$ does have zeros our of the unit circle (non-minimum-phase zeros), we have to include such zeros in the ficticious plant.\\
+    If we don't consider them into the plant, while designing the controller, we obtain a $T$, it is possible that we perform an unstable cancellation with the non-minimum phase of the plant. Nonetheless,  it is a problem due to the fact that, in the context of DDDC, it is assumed that we don't know the plant.\\
+    In practice, we can start by performing an experiment on $G$ by applying a step input. If the system $G$ has any non-minimum-phase zeros, the step response is going to show an undershoot. \textbf{In this case, we should do something more in order to detect the position of that zero.}
+\end{enumerate}
+
+
+
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 \section{Stability Guarantee in Set-Membership Direct Data-Driven Control}
@@ -389,11 +579,144 @@ Nevertheless, in practice, stability is not the only requirement. Most often, ze
 Then we have our second sufficient condition. That is, $\Delta$ is stable if $M$ and $P$ are stable - the same reasoning as before holds - and if $K^{c}$ is \textbf{unstable only due to poles in} $z = 1$, our \textbf{loop function} $\frac{M}{1-M}$ have the same number of poles in $z = 1$.
 
 
+\subsection{How to compute \(\|\Delta(z)\|_\infty\) without using the plant, and given noisy data?}
 
+\begin{enumerate}
+\item Consider one frequency at a time. Cast the problem into the SM framework. This is a set-membership \textbf{estimation} problem, \textbf{not an identification} problem, because we do not want to identify a transfer function; instead, we want to obtain a quantity related to a transfer function. We are given the following a-priori information on \(\Delta\):
 
+\begin{itemize}
+    \item Maximum order of the system: Since 
+    \[
+    \Delta = M - K^cP(1-M),
+    \]
+    we can say \(\Delta\) is a transfer function in the following form:
+    \[
+    \Delta(q^{-1}) = \frac{\gamma_0 + \gamma_1 q^{-1} + \cdots + \gamma_{n_\Delta}q^{-n_{\Delta}}}{1 + \delta_1 q^{-1} + \cdots + \delta_{n_\Delta}q^{-n_{\Delta}}}
+    \]
+    where
+    \[
+    n_\Delta \leq n_k + n_p + n_M.
+    \]
+    Here, \(n_k\) is the order of the controller \(K^c\), \(n_p\) is the order of the plant, and \(n_M\) is the order of the reference model \(M\). This relationship comes from the second term of \(\Delta\); note that \(1-M\) always has the same order as \(M\), \(n_M\).
 
+    \item Definition and plant's data:
+    \[
+    \Delta(q^{-1})r_t = M(q^{-1})r_t - K^c(q^{-1})(1-M(q^{-1}))P(q^{-1})r_t 
+    \]
+    Now, we can substitute the following term:
+    \[
+    P(q^{-1})r_t = y_t = \tilde{y}_t - \eta_t
+    \]
+    Therefore,
+    \[
+    \Delta r_t = Mr_t - K^c(1-M)\tilde{y}_t + K^c (1-M)\eta_t
+    \]
+    here, we call name
+    \[
+    z_t = Mr_t - K^c(1-M)\tilde{y}_t
+    \]
+    and
+    \[
+    F(q^{-1}) = K^c (1-M)
+    \]
+    
+    
+\end{itemize}
+    \item worst-case (max) norm estimation problem.
+    
+        \[
+        \max_{\Delta,\,\eta} |\Delta(e^{i\omega})| \hspace{0.5cm} \text{s.t. } \Delta{q^{-1}}r_t = z_t + F(q^{-1})\eta_t,\,\,\,\,|\eta_t|\leq \Delta_\eta
+        \]
+        Pay attention that, we are not directly considering the infinity norm, and we are considering the magnitude of a values of the frequency responce for a fixed $\omega$.
+        
+        
+        \item recast into polynomial optimization. Let $a,\,b \in \mathbb{R}$ be optimmization variables such that
+        \[
+        \Delta(e^{i\omega}) = a + i b
+        \]
+        then,
+        \[
+        |\Delta(e^{i\omega})| = \sqrt{a^2+b^2}\:\: \Longleftrightarrow \:\: \exists t: t=  |\Delta(e^{i\omega})|\hspace{1cm} t^2 = a^2 + b^2
+        \]
+        Moreover, denote:
+        \[
+        \begin{bmatrix}
+            e^0\\
+            e^{i \omega}\\
+            e^{2i \omega}\\
+            \vdots\\
+            e^{in_\Delta \omega}
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            \rho_0\\
+            \rho_1\\
+            \rho_2\\
+            \vdots\\
+            \rho_{n_\Delta}
+        \end{bmatrix}
+        +
+           \begin{bmatrix}
+            \sigma_0\\
+            \sigma_1\\
+            \sigma_2\\
+            \vdots\\
+            \sigma_{n_\Delta}
+        \end{bmatrix}
+        \]
+As a function of the parameters \(\gamma,\,\delta\), we can evaluate \(\Delta(e^{i\omega})\) as:
+\[
+\Delta(z) = \frac{\gamma_0 z^{n_\Delta} + \gamma_1 z^{n_\Delta-1} + \cdots + \gamma_{n_\Delta-1} z + \gamma_{n_\Delta}}
+{z^{n_\Delta} + \delta_1 z^{n_\Delta-1} + \cdots + \delta_{n_\Delta-1} z + \delta_{n_\Delta}}.
+\]
+    
+    Now, we replace $z$ with $e^{i\omega}$
+    \[
+\Delta(e^{i\omega}) = \frac{\gamma_0 e^{i n_\Delta \omega} + \gamma_1 e^{i (n_\Delta-1) \omega} + \cdots + \gamma_{n_\Delta-1} e^{i \omega} + \gamma_{n_\Delta}}
+{e^{i n_\Delta \omega} + \delta_1 e^{i (n_\Delta-1) \omega} + \cdots + \delta_{n_\Delta-1} e^{i \omega} + \delta_{n_\Delta}} = a + ib
+\]
+    pay attention that all the terms in $e$ are exactly known and can be considered in the vector form we denoted.
 
+        Then $a,\,b,\,\gamma,\,\delta$ are related by:
+\[
+\sum_{j=0}^{n_\Delta} \gamma_j e^{i(n_\Delta-j)\omega} 
+= 
+(a + i b) 
+\left[ 
+\sum_{j=0}^{n_\Delta} \delta_j e^{i\omega (n_\Delta - j)} 
+\right]
+\]
 
+here $\delta_0$ is considered to be 1 in order to make the representation more compact. Now, we replace the imaginary parts including $e$ with the cartisian representation of them.
+\[
+\sum_{j=0}^{n_\Delta} \gamma_j \left( \rho_j + i \sigma_j \right) 
+= 
+(a + i b) 
+\left[ 
+\sum_{j=0}^{n_\Delta} \delta_j \left( \rho_j + i \sigma_j \right) 
+\right]
+\]
+
+\[
+\sum_{j=0}^{n_\Delta} \gamma_j \rho_j + i \sum_{j=0}^{n_\Delta} \gamma_j \sigma_j 
+= 
+\sum_{j=0}^{n_\Delta} a \delta_j \rho_j + i \sum_{j=0}^{n_\Delta} a \delta_j \sigma_j 
++ i b \sum_{j=0}^{n_\Delta} \delta_j \rho_j - b \sum_{j=0}^{n_\Delta} \delta_j \sigma_j
+\]
+
+Now we get two equations, the real part on the left-hand side should be equal to the real part on the right-hand side, and the same for the imaginary part.
+\[
+\sum_{j=0}^{n_\Delta} \gamma_j \rho_j = \sum_{j=0}^{n_\Delta} a \delta_j \rho_j - b \sum_{j=0}^{n_\Delta} \delta_j \sigma_j
+\]
+For the imaginary part, we obtain:
+\[
+\sum_{j=0}^{n_\Delta} \gamma_j \sigma_j = + i \sum_{j=0}^{n_\Delta} a \delta_j \sigma_j 
++ i b \sum_{j=0}^{n_\Delta} \delta_j \rho_j
+\]
+
+Next, $\delta,\,\gamma$ are related to the data and the noise samples according to:
+
+\end{enumerate}
 
 
 
