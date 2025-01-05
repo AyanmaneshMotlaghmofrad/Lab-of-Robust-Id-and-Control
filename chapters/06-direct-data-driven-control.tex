@@ -390,12 +390,6 @@ Assuming that our real task in a real control problem is, given a plant $G$, we 
 
 
 
-
-
-
-
-
-
 \section{Stability Guarantee in Set-Membership Direct Data-Driven Control}
 
 Considering DDDC, if M and the selected controller class are ”appropriate”, a solution exists.
@@ -471,9 +465,11 @@ Now, we use the small-gain theorem. Considering the feedback control system, we 
     \caption{Block diagram of the feedback control system with uncertainty on the plant; in the discussion of indirect data drive design of controllers.}
  \end{figure}
  \[
- S1 \equiv \:\:\:\: S2 \equiv G_{w_\Delta z_\Delta} = \frac{-KP_nW_p}{1+KP_n}
+ S1 \equiv \Delta \]
+ \[
+ S2 \equiv G_{w_\Delta z_\Delta} = \frac{-KP_nW_p}{1+KP_n}
  \]
- Here, $S1$ and $W_p$ is stable by assumption. Then, we should study the stability of $S2$. $S2$ is the multiplication of
+ Here, $S1$ is stable by assumption.  Then, we should study the stability of $S2$. $S2$ is the multiplication of
  \[
  S2 = -T_n*W_p
  \]
@@ -481,26 +477,30 @@ Now, we use the small-gain theorem. Considering the feedback control system, we 
  \[
  T_n = \frac{KP_n}{1 + K P_n}
  \]
- and $T_n$ is stable if $K$ stabilizes the nominal plant.
+$W_p$ is stable by assumption, it is a weighting function determining the norm of uncertainty and the uncertainty cannot be infinite for a given frequency. In addition, $T_n$ is stable if $K$ stabilizes the nominal plant.
  
  Small-gain theorem implies that:
  \[
- 1 > \|S1S2\|_\infty = \|\Delta\frac{-KP_nW_P}{1 + KP_n}\|_\infty
+\|S1S2\|_\infty = \|\Delta\frac{-KP_nW_P}{1 + KP_n}\|_\infty < 1
  \]
- and adopting sum-multiplicativity property of induced norms. Induced norm is the norm defined by the worst case ratio between two norms in two different space. Since a system is an object which maps signals into signals, we can consider it as an operator between the space of signals. And if we define the norm of a signal as the energy of that signal, $H_\infty$ is the induced norm from the space of bounded energy signals.
+ and adopting\textbf{ sum-multiplicativity property of induced norms.} 
  \[
- \|\Delta\frac{-KP_nW_P}{1 + KP_n}\|_\infty > \|\Delta\|_\infty \|\Delta\frac{KP_nW_P}{1 + KP_n}\|_\infty
+ \|\Delta\frac{-KP_nW_P}{1 + KP_n}\|_\infty \leq\|\Delta\|_\infty \|\Delta\frac{KP_n}{1 + KP_n}W_P\|_\infty
  \]
  Since we know that $\|\Delta\|_\infty<1$ we obtain that 
  \[
- \|\frac{KP_nW_P}{1 + KP_n}\|_\infty < 1
+\|S1S2\|_\infty \leq \|\frac{KP_n}{1 + KP_n}W_P\|_\infty < 1
  \]
+ \end{example}
  
-\end{example}
 \begin{example}
+  \begin{factbox}[Induced norm]
+ Induced norm is the norm defined by the worst case ratio between two norms in two different space. Since a system is an object which maps signals into signals, we can consider it as an operator between the space of signals. And if we define the norm of a signal as the energy of that signal, $H_\infty$ is the induced norm from the space of bounded energy signals.
+ \end{factbox}
+
 which means if 
 \[
- \|\frac{KP_nW_P}{1 + KP_n}\|_\infty < 1
+ \|\frac{KP_n}{1 + KP_n}W_P\|_\infty < 1
 \]
 the interconnection of the two systems is going to be stable two.
 \end{example}
@@ -523,7 +523,7 @@ S1 \equiv K^{c} - K^{*} \:\:\:\: S2 \equiv \frac{-P}{1+K^{*}P}
 \]
 
 Now consider the following theorem:\\
-
+\newpage
 \textbf{Small-gain theorem in DDDC}:\\
 Let
 \[
@@ -572,20 +572,27 @@ At this point, it is true that we eleminated $K^{*}$, but still we have the desc
 
 
 Regarding the first assumption, The ideal controller $K^{*} = \frac{M}{P(1-M)}$ stabilizes the plant \textbf{if and only if} $M$ is stable and no unstable cancellations occur, discussed in the previous section.\\
-Now, we focus our attention on the second and the third assumption, which is we have to ensure that $\Delta = M - K^{c}P(1-M)$ is stable. To make sure that $Delta$ is stable we should make sure that its two terms are stable. $M$ is stable, since we want the final plant to be stable. $P$ is considered to be stable; otherwise, we would not be able to perform the experiment. $K^{c}$ is stable. Then, this condition is automatically satisfied. \\
+Now, we focus our attention on the second and the third assumption, which is we have to ensure that $\Delta = M - K^{c}P(1-M)$ is stable. To make sure that $\Delta$ is stable we should make sure that its two terms are stable. \textbf{$M$ is stable, since we want the final plant to be stable}. \textbf{$P$ is considered to be stable; otherwise, we would not be able to perform the experiment.} If $K^{c}$ is stable, then this condition is automatically satisfied. So one of the sufficient conditions is that $K^{c}$ is stable.\\
 
 Nevertheless, in practice, stability is not the only requirement. Most often, zero steady-error is also require, and in order to assure that, we require integrators, which make the controller unstable, and we cannot make the reasoning we just made. \\
 
-Then we have our second sufficient condition. That is, $\Delta$ is stable if $M$ and $P$ are stable - the same reasoning as before holds - and if $K^{c}$ is \textbf{unstable only due to poles in} $z = 1$, our \textbf{loop function} $\frac{M}{1-M}$ have the same number of poles in $z = 1$.
+Then we have our second sufficient condition. That is, $\Delta$ is stable if $M$ and $P$ are stable - the same reasoning as before holds - and if $K^{c}$ is \textbf{unstable only due to poles in} $z = 1$, our \textbf{loop function} $\frac{M}{1-M}$ have the same number of poles in $z = 1$.\\
 
+\textbf{In summary}, in order for the close-loop control system to be internally stable, we need to ensure that $\Delta (z)$ is stable.
+Assume $P$ and $M$ are stable. Sufficient conditions for this are:
+\begin{itemize}
+\item[a)] Kc is stable.
+\item[b)] Kc is unstable only due to poles in $z = 1$ and $\frac{M}{1-M}$, or the loop function, have the same number
+of poles in $z = 1$.
+\end{itemize}
 
 \subsection{How to compute \(\|\Delta(z)\|_\infty\) without using the plant, and given noisy data?}
 
 \begin{enumerate}
-\item Consider one frequency at a time. Cast the problem into the SM framework. This is a set-membership \textbf{estimation} problem, \textbf{not an identification} problem, because we do not want to identify a transfer function; instead, we want to obtain a quantity related to a transfer function. We are given the following a-priori information on \(\Delta\):
+\item[$1^{st}$ step:] Consider one frequency at a time. Cast the problem into the SM framework. This is a set-membership \textbf{estimation} problem, \textbf{not an identification} problem, because we do not want to identify a transfer function; instead, we want to obtain a quantity related to a transfer function. We are given the following a-priori information on \(\Delta\):
 
 \begin{itemize}
-    \item Maximum order of the system: Since 
+    \item[I)] Maximum order of the system: Since 
     \[
     \Delta = M - K^cP(1-M),
     \]
@@ -599,7 +606,7 @@ Then we have our second sufficient condition. That is, $\Delta$ is stable if $M$
     \]
     Here, \(n_k\) is the order of the controller \(K^c\), \(n_p\) is the order of the plant, and \(n_M\) is the order of the reference model \(M\). This relationship comes from the second term of \(\Delta\); note that \(1-M\) always has the same order as \(M\), \(n_M\).
 
-    \item Definition and plant's data:
+    \item[II)] Definition and plant's data:
     \[
     \Delta(q^{-1})r_t = M(q^{-1})r_t - K^c(q^{-1})(1-M(q^{-1}))P(q^{-1})r_t 
     \]
@@ -608,6 +615,9 @@ Then we have our second sufficient condition. That is, $\Delta$ is stable if $M$
     P(q^{-1})r_t = y_t = \tilde{y}_t - \eta_t
     \]
     Therefore,
+       \[
+    \Delta r_t = Mr_t - K^c(1-M)\left[ \tilde{y}_t - \eta_t \right]
+    \]
     \[
     \Delta r_t = Mr_t - K^c(1-M)\tilde{y}_t + K^c (1-M)\eta_t
     \]
@@ -622,7 +632,7 @@ Then we have our second sufficient condition. That is, $\Delta$ is stable if $M$
     
     
 \end{itemize}
-    \item worst-case (max) norm estimation problem.
+    \item[$2^{nd}$ step:]  worst-case (max) norm estimation problem.
     
         \[
         \max_{\Delta,\,\eta} |\Delta(e^{i\omega})| \hspace{0.5cm} \text{s.t. } \Delta{q^{-1}}r_t = z_t + F(q^{-1})\eta_t,\,\,\,\,|\eta_t|\leq \Delta_\eta
@@ -630,7 +640,8 @@ Then we have our second sufficient condition. That is, $\Delta$ is stable if $M$
         Pay attention that, we are not directly considering the infinity norm, and we are considering the magnitude of a values of the frequency responce for a fixed $\omega$.
         
         
-        \item recast into polynomial optimization. Let $a,\,b \in \mathbb{R}$ be optimmization variables such that
+        \item[$3^{rd}$ step:]  recast into polynomial optimization. in order to do so, First $\Delta(e^{i\omega})$ is recated to a polynomial form, and then, the constraint of this optimiztion problem. \\
+        First, let $a,\,b \in \mathbb{R}$ be optimmization variables such that
         \[
         \Delta(e^{i\omega}) = a + i b
         \]
@@ -670,10 +681,10 @@ As a function of the parameters \(\gamma,\,\delta\), we can evaluate \(\Delta(e^
 {z^{n_\Delta} + \delta_1 z^{n_\Delta-1} + \cdots + \delta_{n_\Delta-1} z + \delta_{n_\Delta}}.
 \]
     
-    Now, we replace $z$ with $e^{i\omega}$
+    Now, we replace $z$ with $e^{i\omega}$, and for the ease in the notation, we consider $\delta_0 = 1$
     \[
 \Delta(e^{i\omega}) = \frac{\gamma_0 e^{i n_\Delta \omega} + \gamma_1 e^{i (n_\Delta-1) \omega} + \cdots + \gamma_{n_\Delta-1} e^{i \omega} + \gamma_{n_\Delta}}
-{e^{i n_\Delta \omega} + \delta_1 e^{i (n_\Delta-1) \omega} + \cdots + \delta_{n_\Delta-1} e^{i \omega} + \delta_{n_\Delta}} = a + ib
+{\delta_0e^{i n_\Delta \omega} + \delta_1 e^{i (n_\Delta-1) \omega} + \cdots + \delta_{n_\Delta-1} e^{i \omega} + \delta_{n_\Delta}} = a + ib
 \]
     pay attention that all the terms in $e$ are exactly known and can be considered in the vector form we denoted.
 
@@ -715,8 +726,115 @@ For the imaginary part, we obtain:
 \]
 
 Next, $\delta,\,\gamma$ are related to the data and the noise samples according to:
+\[
+\Delta(q^{-1})r_t = z_t + F(q^{-1})\eta_t
+\]
+
+\[
+\frac{\sum_{j = 0}^{n_{\Delta}}\gamma_j q^{-j}}{\sum_{j = 0}^{n_{\Delta}}\delta_j q^{-j}}r_t = z_t + 
+\frac{\sum_{j = 0}^{n_F}\beta_j^F q^{-j}}{\sum_{j = 0}^{n_F}\alpha_j^F q^{-j}}\eta_t
+\]
+where, 
+\[
+\delta_0 =1
+\]
+and $\alpha_j^F$ and $\beta_j^F$ are the coefficient of the transfer function $F(q^{-1})$ that we have defined.
+
+\[
+\left( \sum_{j=0}^{n_F} \alpha_j^F q^{-j} \right) 
+\left( \sum_{j=0}^{n_\Delta} \gamma_j q^{-j} \right) r_t =
+\left( \sum_{j=0}^{n_F} \alpha_j^F q^{-j} \right) 
+\left( \sum_{j=0}^{n_\Delta} \delta_j q^{-j} \right) z_t +
+\left( \sum_{j=0}^{n_F} \beta_j^F q^{-j} \right) 
+\left( \sum_{j=0}^{n_\Delta} \delta_j q^{-j} \right) \eta_t
+\]
+
+Expanding the products:
+
+\[
+\sum_{j=0}^{n_F} \sum_{k=0}^{n_\Delta} \alpha_j^F \gamma_k q^{-(j+k)} =
+\sum_{j=0}^{n_F} \sum_{k=0}^{n_\Delta} \alpha_j^F \delta_k q^{-(j+k)} z_t +
+\sum_{j=0}^{n_F} \sum_{k=0}^{n_\Delta} \beta_j^F \delta_k q^{-(j+k)} \eta_t
+\]
+
+In terms of time-shifted variables:
+
+\[
+\sum_{j=0}^{n_F} \sum_{k=0}^{n_\Delta} \alpha_j^F \gamma_k r(t-j-k) =
+\sum_{j=0}^{n_F} \sum_{k=0}^{n_\Delta} \alpha_j^F \delta_k z(t-j-k) +
+\sum_{j=0}^{n_F} \sum_{k=0}^{n_\Delta} \beta_j^F \delta_k \eta(t-j-k)
+\]
+
+Key notes:\\
+- $\delta$ other than $\delta_0 = 1$, $\gamma$, $\eta$ are optimization variables here.\\
+- \(r(t-j-k)\), \(z(t-j-k)\),  \(\eta(t-j-k)\), $\alpha^F$, $\beta^F$ are fixed values.\\
+
+Overall, the optimization problem is recast to:
+
+
+\[
+\max\limits_{t, a, b \in \mathbb{R}, \, \gamma \in \mathbb{R}^{n_\Delta + 1}, \, \delta \in \mathbb{R}^{n_\Delta}, \, \eta \in \mathbb{R}^N} \quad t
+\]
+\[
+\text{s.t.}
+\]
+\[
+t^2 = a^2 + b^2,
+\]
+\[
+\sum_{j=0}^{n_\Delta} \gamma_j \rho_j = \sum_{j=0}^{n_\Delta} \delta_j \left( a \rho_j - b \sigma_j \right),
+\]
+
+\[
+\sum_{j=0}^{n_\Delta} \gamma_j \sigma_j = \sum_{j=0}^{n_\Delta} \delta_j \left( a \sigma_j + b \rho_j \right),
+\]
+
+\[
+\sum_{j=0}^{n_F} \sum_{k=0}^{n_\Delta} \alpha_j^F \gamma_k r(t-j-k) =
+\sum_{j=0}^{n_F} \sum_{k=0}^{n_\Delta} \alpha_j^F \delta_k z(t-j-k) +
+\sum_{j=0}^{n_F} \sum_{k=0}^{n_\Delta} \beta_j^F \delta_k \eta(t-j-k)
+\]
 
 \end{enumerate}
+
+The above problem is a polynomial optimization problem.
+Solving it using SDP relaxation, we get an upper bound on the true $\Delta(e^{i\omega})$.\\
+
+Theoretically, the problem must be solved for\textbf{ all frequencies }$\omega \in [0,\,2 \pi]$. \\
+Alternatively, we
+can introduce a Lipschitz continuity assumption on $|\Delta(e^{i\omega})|$, e.g., assuming that it does
+not increase or decay faster than 100 dB/dec or 200 dB/dec.\\
+
+The computed upper bounds on $|\Delta(e^{i\omega})|$ can be made less conservative by increasing
+the number of samples used in the formulation of the optimization problem.
+
+\newpage
+
+\begin{example}[example]
+    
+We perform SM-DDDC from data obtained by simulating the plant:
+\[
+G(q^{-1}) = \frac{0.09516q^{-1} + 0.02q^{-2} + 0.05q^{-3} - 0.04q^{-4}}{1 - 0.9048q^{-1} + 0.2q^{-2} - 0.5q^{-3} + 0.4q^{-4}}.
+\]
+
+The input \( r(t) \) is a random signal with amplitude 1. The output is corrupted by uniform noise in \([-|\epsilon|, +|\epsilon|]\), resulting in a signal-to-noise ratio of 15 dB. The reference model is:
+\[
+M(q^{-1}) = \frac{0.4q^{-1}}{1 - 0.6q^{-1}}.
+\]
+
+The controller order is iteratively searched starting from \( n_K = 1 \). The procedure leads to a feasible optimization problem for \( n_K = 4 \). The central estimate controller to be certified is:
+\[
+K(\omega_c, z) = \frac{4.176z^4 - 3.68z^3 + 0.7055z^2 - 2.006z + 1.644}{z^4 - 0.7755z^3 + 0.314z^2 - 0.9413z + 0.4028}.
+\]
+
+We assume the knowledge of an upper bound on the Lipschitz constant of \( L_b = 200\text{ dB/dec} \).
+ \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{stability-dddc.png}
+    \caption{The solution of the optimization problem for checking the stability of the plant considering the designed controller.}
+ \end{figure}
+\end{example}
+
 
 
 
