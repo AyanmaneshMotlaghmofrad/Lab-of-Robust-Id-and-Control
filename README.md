@@ -1,7 +1,7 @@
 # Lab-of-Robust-Id-and-Contorl
-title: "Laboratory of Robust Identification and Control"
-tutor : "Diego Regruto"ù
-Author: Amirhossein Ayanmanesh Motlaghmofrad
+- Title: "Laboratory of Robust Identification and Control"
+- Tutor : "Diego Regruto"ù
+- Author: Amirhossein Ayanmanesh Motlaghmofrad
 
 # tools
 - MATLAB 2023b
